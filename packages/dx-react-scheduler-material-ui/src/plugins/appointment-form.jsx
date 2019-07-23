@@ -8,6 +8,10 @@ import { BooleanEditor } from '../templates/appointment-form/boolean-editor';
 import { Container } from '../templates/appointment-form/container';
 import { ScrollableArea } from '../templates/appointment-form/scrollable-area';
 import { StaticArea } from '../templates/appointment-form/static-area';
+import { SaveButton } from '../templates/appointment-form/save-button';
+import { DeleteButton } from '../templates/appointment-form/delete-button';
+import { CloseButton } from '../templates/appointment-form/close-button';
+import { Root } from '../templates/appointment-form/root';
 
 export const AppointmentForm = withComponents({
   Popup,
@@ -19,4 +23,8 @@ export const AppointmentForm = withComponents({
   Container,
   ScrollableArea,
   StaticArea,
+  SaveButton,
+  DeleteButton,
+  CloseButton,
+  Root,
 })(AppointmentFormBase);

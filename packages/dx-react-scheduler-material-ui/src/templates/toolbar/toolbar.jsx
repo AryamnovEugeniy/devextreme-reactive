@@ -8,6 +8,7 @@ import { getBorder } from '../utils';
 const styles = theme => ({
   toolbar: {
     borderBottom: getBorder(theme),
+    //flexShrink: 0,
   },
 });
 

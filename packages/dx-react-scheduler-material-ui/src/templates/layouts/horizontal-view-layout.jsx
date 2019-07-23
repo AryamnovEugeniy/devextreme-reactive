@@ -9,6 +9,7 @@ import { scrollingStrategy } from '../utils';
 const styles = theme => ({
   container: {
     overflowY: 'auto',
+    //position: 'absolute',
   },
   stickyHeader: {
     top: 0,
@@ -51,13 +52,10 @@ class HorizontalViewLayoutBase extends React.PureComponent {
       timeTableComponent: TimeTable,
       setScrollingStrategy,
       classes,
-      height,
       className,
       style,
       ...restProps
     } = this.props;
-
-    const containerStyle = height === AUTO_HEIGHT ? { height: '100%' } : { height: `${height}px` };
 
     return (
       <Grid
@@ -66,7 +64,6 @@ class HorizontalViewLayoutBase extends React.PureComponent {
         container
         direction="column"
         wrap="nowrap"
-        style={{ ...containerStyle, ...style }}
         {...restProps}
       >
         <Grid
@@ -92,7 +89,6 @@ HorizontalViewLayoutBase.propTypes = {
   dayScaleComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   timeTableComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   setScrollingStrategy: PropTypes.func.isRequired,
-  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,

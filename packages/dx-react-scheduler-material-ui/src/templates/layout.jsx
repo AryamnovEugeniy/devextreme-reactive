@@ -7,6 +7,12 @@ const styles = {
     // NOTE: fix sticky positioning in Safari
     width: '100%',
     height: '100%',
+    position: 'relative',
+    listStyle: 'none',
+
+    display: 'flex',
+
+    justifyContent: 'space-around',
   },
 };
 

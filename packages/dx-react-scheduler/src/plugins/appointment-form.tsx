@@ -58,6 +58,10 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
     commandButtonComponent: 'CommandButton',
     scrollableAreaComponent: 'ScrollableArea',
     staticAreaComponent: 'StaticArea',
+    saveButtonComponent: 'SaveButton',
+    deleteButtonComponent: 'DeleteButton',
+    closeButtonComponent: 'CloseButton',
+    rootComponent: 'Root',
   };
 
   constructor(props) {
@@ -95,6 +99,7 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
       this.setAppointmentData({ appointmentData });
       this.toggleVisibility();
     };
+    this.ref = React.createRef();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -114,13 +119,16 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
       containerComponent: Container,
       scrollableAreaComponent: ScrollableArea,
       staticAreaComponent: StaticArea,
-      popupComponent: Popup,
       startDateComponent: StartDateEditor,
       endDateComponent: EndDateEditor,
       titleComponent: TitleEditor,
-      commandButtonComponent: CommandButton,
+      saveButtonComponent: SaveButton,
+      deleteButtonComponent: DeleteButton,
+      closeButtonComponent: CloseButton,
+      rootComponent: Root,
       readOnly,
       messages,
+      scheduler,
     } = this.props;
     const { visible, appointmentData } = this.state;
 
@@ -130,8 +138,8 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
         name="AppointmentForm"
         dependencies={pluginDependencies}
       >
-        <Template name="timeTable">
-          <TemplatePlaceholder />
+        <Template name="schedulerRoot">{params => (
+          <React.Fragment>
           <TemplateConnector>
             {({
               addedAppointment,
@@ -147,6 +155,8 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
               changeAppointment,
               cancelChangedAppointment,
               commitChangedAppointment,
+
+              commitDeletedAppointment,
             }) => {
               const isNew = editingAppointmentId === undefined;
               const changedAppointment = {
@@ -158,48 +168,52 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
                 : changeAppointment;
 
               return (
-                <Popup
+                <React.Fragment>
+                  <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '100%'}}
+                      ref={this.ref}
+                    />
+                  </div>
+
+                <Root
                   visible={visible}
+                  scheduler={scheduler}
+                  divRef={this.ref.current}
+                  style={{ position: 'absolute'}}
                 >
                   <Container>
                     <ScrollableArea>
-                      <TitleEditor
-                        readOnly={readOnly}
-                        label={getMessage('titleLabel')}
-                        value={changedAppointment.title}
-                        {...changeAppointment && {
-                          onValueChange: title => changeAppointmentField({ change: { title } }),
-                        }}
-                      />
-                      <StartDateEditor
-                        readOnly={readOnly}
-                        label={getMessage('startDateLabel')}
-                        value={changedAppointment.startDate}
-                        {...changeAppointment && {
-                          onValueChange:
-                            startDate => changeAppointmentField({ change: { startDate } }),
-                        }}
-                      />
-                      <EndDateEditor
-                        readOnly={readOnly}
-                        label={getMessage('endDateLabel')}
-                        value={changedAppointment.endDate}
-                        {...changeAppointment && {
-                          onValueChange: endDate => changeAppointmentField({ change: { endDate } }),
-                        }}
-                      />
-                      <AllDayEditor
-                        readOnly={readOnly}
-                        text={getMessage('allDayLabel')}
-                        value={changedAppointment.allDay}
-                        {...changeAppointment && {
-                          onValueChange: allDay => changeAppointmentField({ change: { allDay } }),
-                        }}
-                      />
+
                     </ScrollableArea>
                     <StaticArea>
-                      <CommandButton
-                        text={getMessage('cancelCommand')}
+                    {!readOnly && (
+                      <SaveButton
+                        getMessage={getMessage}
+                        onExecute={() => {
+                          this.toggleVisibility();
+                          if (commitChangedAppointment) {
+                            if (isNew) {
+                              commitAddedAppointment();
+                            } else {
+                              commitChangedAppointment({
+                                appointmentId: changedAppointment.id,
+                              });
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                    {!readOnly && (
+                      <DeleteButton
+                        onExecute={() => {
+                          commitDeletedAppointment({
+                            deletedAppointmentId: changedAppointment.id,
+                          });
+                          this.toggleVisibility();
+                        }}
+                      />
+                    )}
+                      <CloseButton
                         onExecute={() => {
                           this.toggleVisibility();
                           if (stopEditAppointment) {
@@ -211,32 +225,18 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
                             }
                           }
                         }}
-                        id={CANCEL_COMMAND_BUTTON}
                       />
-                      {!readOnly && (
-                        <CommandButton
-                          text={getMessage('commitCommand')}
-                          onExecute={() => {
-                            this.toggleVisibility();
-                            if (commitChangedAppointment) {
-                              if (isNew) {
-                                commitAddedAppointment();
-                              } else {
-                                commitChangedAppointment({
-                                  appointmentId: changedAppointment.id,
-                                });
-                              }
-                            }
-                          }}
-                          id={COMMIT_COMMAND_BUTTON}
-                        />
-                      )}
                     </StaticArea>
                   </Container>
-                </Popup>
+                </Root>
+                </React.Fragment>
               );
             }}
           </TemplateConnector>
+
+          <TemplatePlaceholder />
+          </React.Fragment>
+          )}
         </Template>
 
         <Template name="tooltip">
@@ -245,18 +245,18 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
               {(getters, {
                 startEditAppointment,
               }) => (
-                <TemplatePlaceholder
-                  params={{
-                    ...params,
-                    onOpenButtonClick: () => {
-                      this.openFormHandler(params.appointmentMeta!.data);
-                      callActionIfExists(startEditAppointment, {
-                        appointmentId: params.appointmentMeta!.data.id,
-                      });
-                    },
-                  }}
-                />
-              )}
+                  <TemplatePlaceholder
+                    params={{
+                      ...params,
+                      onOpenButtonClick: () => {
+                        this.openFormHandler(params.appointmentMeta!.data);
+                        callActionIfExists(startEditAppointment, {
+                          appointmentId: params.appointmentMeta!.data.id,
+                        });
+                      },
+                    }}
+                  />
+                )}
             </TemplateConnector>
           )}
         </Template>
@@ -267,18 +267,18 @@ class AppointmentFormBase extends React.PureComponent<AppointmentFormProps, Appo
               {(getters, {
                 startEditAppointment,
               }) => (
-                <TemplatePlaceholder
-                  params={{
-                    ...params,
-                    onDoubleClick: () => {
-                      this.openFormHandler(params.data);
-                      callActionIfExists(startEditAppointment, {
-                        appointmentId: params.data.id,
-                      });
-                    },
-                  }}
-                />
-              )}
+                  <TemplatePlaceholder
+                    params={{
+                      ...params,
+                      onDoubleClick: () => {
+                        this.openFormHandler(params.data);
+                        callActionIfExists(startEditAppointment, {
+                          appointmentId: params.data.id,
+                        });
+                      },
+                    }}
+                  />
+                )}
             </TemplateConnector>
           )}
         </Template>
