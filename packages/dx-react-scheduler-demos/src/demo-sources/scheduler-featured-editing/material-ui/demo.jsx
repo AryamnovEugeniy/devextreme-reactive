@@ -289,7 +289,7 @@ class Demo extends React.PureComponent {
       confirmationVisible: false,
       editingFormVisible: false,
       deletedAppointmentId: undefined,
-      editingAppointment: undefined,
+      editingAppointment: {},
       previousAppointment: undefined,
       addedAppointment: {},
       startDayHour: 9,
@@ -353,7 +353,7 @@ class Demo extends React.PureComponent {
         previousAppointment: editingAppointment,
       });
     }
-    this.setState({ editingAppointment: undefined, isNewAppointment: true });
+    this.setState({ editingAppointment: {}, isNewAppointment: true });
   }
 
   setDeletedAppointmentId(id) {
@@ -409,6 +409,7 @@ class Demo extends React.PureComponent {
       editingFormVisible,
       startDayHour,
       endDayHour,
+      editingAppointment,
     } = this.state;
     const { classes } = this.props;
 
@@ -425,6 +426,7 @@ class Demo extends React.PureComponent {
             onCommitChanges={this.commitChanges}
             onEditingAppointmentChange={this.onEditingAppointmentChange}
             onAddedAppointmentChange={this.onAddedAppointmentChange}
+            editingAppointment={editingAppointment}
           />
           <WeekView
             startDayHour={startDayHour}
