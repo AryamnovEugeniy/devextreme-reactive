@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
     '&:last-child': {
       borderRight: 'none',
     },
+    height: ({ height }) => (height ? theme.spacing(6 * height) : undefined),
   },
   text: {
     ...theme.typography.caption,
@@ -44,13 +45,15 @@ export const Cell = React.memo(({
   left,
   hasBrightBorder,
   children,
+  height,
   ...restProps
 }) => {
-  const classes = useStyles({ left, hasBrightBorder });
+  const classes = useStyles({ left, hasBrightBorder, height });
   return (
     <TableCell
       className={classNames(classes.cell, className)}
       colSpan={colSpan}
+      rowSpan={rowSpan}
       {...restProps}
     >
       <div className={classes.text}>
@@ -67,6 +70,7 @@ Cell.propTypes = {
   colSpan: PropTypes.number.isRequired,
   rowSpan: PropTypes.number,
   left: PropTypes.number.isRequired,
+  height: PropTypes.number,
   hasBrightBorder: PropTypes.bool,
   children: PropTypes.node,
 };
@@ -75,5 +79,6 @@ Cell.defaultProps = {
   className: undefined,
   hasBrightBorder: true,
   rowSpan: 1,
+  height: undefined,
   children: null,
 };

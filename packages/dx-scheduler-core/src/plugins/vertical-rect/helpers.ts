@@ -71,7 +71,6 @@ export const getVerticallyGroupedRowIndex: PureComputed<
     isWrongCell = !viewCellsData[timeTableRowIndex][columnIndex].groupingInfo!.every(group => (
       group.id === appointment[group.fieldName]
     ));
-    console.log(timeTableRowIndex)
   }
   return timeTableRowIndex;
 };

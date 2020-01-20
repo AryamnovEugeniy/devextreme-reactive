@@ -6,11 +6,13 @@ const TOP_CELL_OFFSET = 0.32;
 const CELL_BOUND_OFFSET_PX = 1;
 
 const getCellRect: GetCellRectHorizontalFn = (
-  date, appointment, viewCellsData, cellElementsMeta, takePrev, multiline,
+  date, appointment, viewCellsData, groupOrientation,
+  groupsNumber, cellElementsMeta, takePrev, multiline,
 ) => {
   const cellIndex = multiline
-    ? getMonthCellIndexByAppointmentData(viewCellsData, date, appointment, takePrev)
-    : getAllDayCellIndexByAppointmentData(viewCellsData, date, appointment, takePrev);
+    ? getMonthCellIndexByAppointmentData(
+      viewCellsData, groupOrientation, groupsNumber, date, appointment, takePrev,
+    ) : getAllDayCellIndexByAppointmentData(viewCellsData, date, appointment, takePrev);
 
   const {
     top,
@@ -30,6 +32,8 @@ const getCellRect: GetCellRectHorizontalFn = (
 
 export const getHorizontalRectByAppointmentData: GetHorizontalRectByAppointmentDataFn = (
   appointment,
+  groupOrientation,
+  groupsNumber,
   {
     multiline,
     viewCellsData,
@@ -37,10 +41,12 @@ export const getHorizontalRectByAppointmentData: GetHorizontalRectByAppointmentD
   },
 ) => {
   const firstCellRect = getCellRect(
-    appointment.start.toDate(), appointment, viewCellsData, cellElementsMeta, false, multiline,
+    appointment.start.toDate(), appointment, viewCellsData, groupOrientation,
+    groupsNumber, cellElementsMeta, false, multiline,
   );
   const lastCellRect = getCellRect(
-    appointment.end.toDate(), appointment, viewCellsData, cellElementsMeta, true, multiline,
+    appointment.end.toDate(), appointment, viewCellsData, groupOrientation,
+    groupsNumber, cellElementsMeta, true, multiline,
   );
 
   const top = firstCellRect.top + (firstCellRect.height * TOP_CELL_OFFSET);

@@ -3,25 +3,28 @@ import * as PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import { makeStyles } from '@material-ui/core/styles';
+import classNames from 'clsx';
+import { GROUPING_PANEL_VERTICAL_CELL_WIDTH } from '../constants';
 
-const useStyles = makeStyles(({ spacing }) => ({
-  table: {
+const useStyles = makeStyles({
+  layout: {
     tableLayout: 'fixed',
+    width: ({ cellsInRow }) => `${cellsInRow * GROUPING_PANEL_VERTICAL_CELL_WIDTH}px`,
   },
-}));
+});
 
 export const VerticalLayout = ({
   rowComponent: Row,
   cellComponent: Cell,
   groups,
   rowSpan,
+  className,
   ...restProps
 }) => {
+  const classes = useStyles({ cellsInRow: groups.length });
   return (
-    <Table {...restProps}>
+    <Table className={classNames(classes.layout, className)} {...restProps}>
       <TableBody>
-        {/* {groups.map((groupRow, rowIndex) => {
-          groupRow.map((group, groupIndex) => { */}
         {groups[groups.length - 1].map((group, groupIndex) => {
           const cells = [];
           for (let i = 0; i < groups.length; i += 1) {
@@ -29,17 +32,31 @@ export const VerticalLayout = ({
             if (groupIndex % groupSpan === 0) {
               cells.push({
                 group: groups[i][groupIndex / groupSpan],
-                rowSpan: (rowSpan * groupSpan) / groups[groups.length - 1].length,
-                left: 0,
-                hasRightBorder: true,
+                rowSpan: groupSpan,
+                height: (rowSpan * groupSpan) / groups[groups.length - 1].length,
+                hasBrightBorder: true,
               });
             }
           }
-          console.log(cells)
-        })
-
-          /* });
-        })} */}
+          return (
+            <Row>
+              {cells.map(({
+                group: cellGroup, rowSpan: cellRowSpan, height, hasBrightBorder,
+              }) => {
+                return (
+                  <Cell
+                    group={cellGroup}
+                    rowSpan={cellRowSpan}
+                    height={height}
+                    left={0}
+                    hasBrightBorder={hasBrightBorder}
+                    colSpan={1}
+                  />
+                );
+              })}
+            </Row>
+          )
+        })}
       </TableBody>
     </Table>
   );
@@ -50,4 +67,9 @@ VerticalLayout.propTypes = {
   cellComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   rowSpan: PropTypes.number.isRequired,
+  className: PropTypes.string,
+};
+
+VerticalLayout.defaultProps = {
+  className: undefined,
 };
