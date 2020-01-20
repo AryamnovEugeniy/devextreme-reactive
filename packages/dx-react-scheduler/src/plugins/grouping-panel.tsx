@@ -6,7 +6,7 @@ import {
   PluginComponents,
 } from '@devexpress/dx-react-core';
 import { GroupingPanelProps } from '../types';
-import { VERTICAL_VIEW_LEFT_OFFSET, HORIZONTAL_VIEW_LEFT_OFFSET } from '@devexpress/dx-scheduler-core';
+import { VERTICAL_VIEW_LEFT_OFFSET, HORIZONTAL_VIEW_LEFT_OFFSET, HORIZONTAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 
 const pluginDependencies = [
   { name: 'GroupingState' },
@@ -20,6 +20,7 @@ const pluginDependencies = [
 class GroupingPanelBase extends React.PureComponent<GroupingPanelProps> {
   static components: PluginComponents = {
     horizontalLayoutComponent: 'HorizontalLayout',
+    verticalLayoutComponent: 'VerticalLayout',
     rowComponent: 'Row',
     cellComponent: 'Cell',
   };
@@ -27,6 +28,7 @@ class GroupingPanelBase extends React.PureComponent<GroupingPanelProps> {
   render() {
     const {
       horizontalLayoutComponent: HorizontalLayout,
+      verticalLayoutComponent: VerticalLayout,
       rowComponent,
       cellComponent,
     } = this.props;
@@ -38,20 +40,28 @@ class GroupingPanelBase extends React.PureComponent<GroupingPanelProps> {
       >
         <Template name="groupingPanel">
           <TemplateConnector>
-            {({ groups, viewCellsData, currentView, groupByDate }) => (
-              <HorizontalLayout
-                rowComponent={rowComponent}
-                cellComponent={cellComponent}
-                groups={groups}
-                colSpan={viewCellsData[0].length}
-                cellStyle={{
-                  left: currentView && currentView.type === 'month'
-                  ? HORIZONTAL_VIEW_LEFT_OFFSET
-                  : VERTICAL_VIEW_LEFT_OFFSET,
-                }}
-                showHeaderForEveryDate={groupByDate && groupByDate(currentView && currentView.name)}
-              />
-            )}
+            {({ groups, viewCellsData, currentView, groupByDate, groupOrientation }) =>
+              groupOrientation(currentView?.name) === HORIZONTAL_GROUP_ORIENTATION ? (
+                <HorizontalLayout
+                  rowComponent={rowComponent}
+                  cellComponent={cellComponent}
+                  groups={groups}
+                  colSpan={viewCellsData[0].length}
+                  cellStyle={{
+                    left: currentView && currentView.type === 'month'
+                      ? HORIZONTAL_VIEW_LEFT_OFFSET
+                      : VERTICAL_VIEW_LEFT_OFFSET,
+                  }}
+                  showHeaderForEveryDate={groupByDate?.(currentView && currentView.name)}
+                />
+              ) : (
+                <VerticalLayout
+                  rowComponent={rowComponent}
+                  cellComponent={cellComponent}
+                  groups={groups}
+                  rowSpan={viewCellsData.length}
+                />
+              )}
           </TemplateConnector>
         </Template>
       </Plugin>

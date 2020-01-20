@@ -74,7 +74,7 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
     } = this.props;
     const { elementsMeta } = this.state;
     const getMessage = this.getMessageFormatter(messages, defaultMessages);
-
+  
     return (
       <Plugin
         name="AllDayPanel"

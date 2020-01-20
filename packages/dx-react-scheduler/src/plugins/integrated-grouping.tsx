@@ -14,10 +14,11 @@ const pluginDependencies = [
   { name: 'WeekView', optional: true },
 ];
 
-const getViewCellsDataComputed = (
-  { viewCellsData, groups, resourcesToGroupBy, groupByDate, currentView }: Getters,
-) => expandViewCellsDataWithGroups(
-  viewCellsData, groups, resourcesToGroupBy, groupByDate(currentView.name),
+const getViewCellsDataComputed = ({
+  viewCellsData, groups, resourcesToGroupBy, groupByDate, currentView, groupOrientation,
+}: Getters) => expandViewCellsDataWithGroups(
+  viewCellsData, groups, resourcesToGroupBy,
+  groupByDate(currentView.name), groupOrientation(currentView.name),
 );
 
 const getGroupsComputed = (

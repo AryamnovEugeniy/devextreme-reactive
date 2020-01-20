@@ -18,6 +18,17 @@ export namespace GroupingPanel {
     /** Specifies whether to show group headings for every date or not. */
     showHeaderForEveryDate?: boolean;
   }
+  /** Describes properties passed to a component that renders the grouping panel vertically. */
+  export interface VerticalLayoutProps {
+    /** A component that renders a row on the grouping panel. */
+    rowComponent: React.ComponentType<GroupingPanel.RowProps>;
+    /** A component that renders a cell in a row on the grouping panel. */
+    cellComponent: React.ComponentType<GroupingPanel.CellProps>;
+    /** Specifies the final representation of Scheduler's groups and the order they will be rendered in. */
+    groups: Array<Array<Group>>;
+    /** Indicates the number of cells in the Scheduler's timetable. */
+    rowSpan: number;
+  }
   /** Describes properties passed to a component that renders a row on the grouping panel. */
   export interface RowProps extends BaseView.RowProps {}
   /** Describes properties passed to a component that renders a cell in a row on the grouping panel. */
@@ -38,6 +49,8 @@ export namespace GroupingPanel {
 export interface GroupingPanelProps {
   /** A component that renders the grouping panel horizontally. */
   horizontalLayoutComponent: React.ComponentType<GroupingPanel.HorizontalLayoutProps>;
+  /** A component that renders the grouping panel vertically. */
+  verticalLayoutComponent: React.ComponentType<GroupingPanel.VerticalLayoutProps>;
   /** A component that renders a row on the grouping panel. */
   rowComponent: React.ComponentType<GroupingPanel.RowProps>;
   /** A component that renders a cell in a row on the grouping panel. */

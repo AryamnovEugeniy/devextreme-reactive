@@ -40,6 +40,7 @@ export const Cell = React.memo(({
   className,
   group,
   colSpan,
+  rowSpan,
   left,
   hasBrightBorder,
   children,
@@ -64,6 +65,7 @@ Cell.propTypes = {
   className: PropTypes.string,
   group: PropTypes.object.isRequired,
   colSpan: PropTypes.number.isRequired,
+  rowSpan: PropTypes.number,
   left: PropTypes.number.isRequired,
   hasBrightBorder: PropTypes.bool,
   children: PropTypes.node,
@@ -72,5 +74,6 @@ Cell.propTypes = {
 Cell.defaultProps = {
   className: undefined,
   hasBrightBorder: true,
+  rowSpan: 1,
   children: null,
 };
