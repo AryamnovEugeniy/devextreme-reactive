@@ -34,6 +34,9 @@ const styles = theme => ({
       borderRight: 'none',
     },
   },
+  topBorderCell: {
+    borderTop: getBrightBorder(theme),
+  },
 });
 
 const CellBase = ({
@@ -43,6 +46,7 @@ const CellBase = ({
   startDate,
   endDate,
   hasRightBorder,
+  hasTopBorder,
   groupingInfo,
   ...restProps
 }) => (
@@ -51,6 +55,7 @@ const CellBase = ({
     className={classNames({
       [classes.cell]: true,
       [classes.rightBorderCell]: hasRightBorder,
+      [classes.topBorderCell]: hasTopBorder,
     }, className)}
     {...restProps}
   >
@@ -65,6 +70,7 @@ CellBase.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   hasRightBorder: PropTypes.bool,
+  hasTopBorder: PropTypes.bool,
   groupingInfo: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -74,6 +80,7 @@ CellBase.defaultProps = {
   endDate: undefined,
   className: undefined,
   hasRightBorder: false,
+  hasTopBorder: false,
   groupingInfo: undefined,
 };
 

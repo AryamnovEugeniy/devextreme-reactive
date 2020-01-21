@@ -37,12 +37,27 @@ export namespace GroupingPanel {
   export interface CellProps {
     /** The number of columns the cell spans. */
     colSpan: number;
+    /** The number of rows the cell spans. */
+    rowSpan: number;
     /** The group the cell represents. */
     group: Group;
     /** The cell's offset from the left. */
     left: number;
     /** Indicates whether to draw a bright right border or an ordinary right border. */
     hasBrightBorder?: boolean;
+    /** A React node used to render an additional content to the cell. */
+    children?: React.ReactNode;
+  }
+  /** Describes properties passed to a component that renders a cell in a row on the grouping panel in the AllDay Panel. */
+  export interface CellProps {
+    /** The number of rows the cell spans. */
+    rowSpan: number;
+    /** The group the cell represents. */
+    group: Group;
+    /** Indicates whether to draw a bright right border or an ordinary right border. */
+    hasBrightBorder?: boolean;
+    /** Specifies the layout's width. */
+    width: number;
     /** A React node used to render an additional content to the cell. */
     children?: React.ReactNode;
   }
@@ -57,4 +72,6 @@ export interface GroupingPanelProps {
   rowComponent: React.ComponentType<GroupingPanel.RowProps>;
   /** A component that renders a cell in a row on the grouping panel. */
   cellComponent: React.ComponentType<GroupingPanel.CellProps>;
+  /** A component that renders a cell in a row on the grouping panel in the AllDayPanel. */
+  allDayCellComponent: React.ComponentType<GroupingPanel.CellProps>;
 }

@@ -63,6 +63,10 @@ const useStyles = makeStyles(theme => ({
   timeScale: {
     width: theme.spacing(10),
   },
+  dayScaleEmptyCell: {
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
 }));
 
 export const VerticalViewLayout = React.memo(({
@@ -126,6 +130,7 @@ export const VerticalViewLayout = React.memo(({
               className={classNames({
                 [classes.stickyElement]: true,
                 [classes.leftPanel]: true,
+                [classes.dayScaleEmptyCell]: true,
                 [classes.ordinaryBorderLeftPanel]: !isLeftBorderSet,
                 [classes.brightBorderLeftPanel]: isLeftBorderSet,
                 [classes.ordinaryBorderHeader]: !isTopBorderSet,

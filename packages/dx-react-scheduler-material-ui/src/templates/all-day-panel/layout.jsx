@@ -82,6 +82,7 @@ class LayoutBase extends React.PureComponent {
                       startDate={startDate}
                       endDate={endDate}
                       hasRightBorder={hasRightBorder}
+                      hasTopBorder
                       groupingInfo={groupingInfo}
                     />
                   ))}

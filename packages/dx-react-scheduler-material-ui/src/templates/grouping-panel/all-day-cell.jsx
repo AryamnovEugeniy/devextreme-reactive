@@ -29,22 +29,18 @@ const useStyles = makeStyles(theme => ({
   text: {
     ...theme.typography.caption,
     padding: theme.spacing(1),
+    paddingTop: 0,
+    paddingBottom: 0,
     color: theme.palette.text.secondary,
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    position: 'sticky',
     display: 'inline-block',
-    left: ({ left }) => theme.spacing(left / 8),
     lineHeight: 1.5,
   },
 }));
 
-export const Cell = React.memo(({
+export const AllDayCell = React.memo(({
   className,
   group,
-  colSpan,
   rowSpan,
-  left,
   hasBrightBorder,
   children,
   height,
@@ -52,12 +48,11 @@ export const Cell = React.memo(({
   ...restProps
 }) => {
   const classes = useStyles({
-    left, hasBrightBorder, height, timeTableCellHeight,
+    hasBrightBorder, height, timeTableCellHeight,
   });
   return (
     <TableCell
       className={classNames(classes.cell, className)}
-      colSpan={colSpan}
       rowSpan={rowSpan}
       {...restProps}
     >
@@ -69,19 +64,17 @@ export const Cell = React.memo(({
   );
 });
 
-Cell.propTypes = {
+AllDayCell.propTypes = {
   className: PropTypes.string,
   group: PropTypes.object.isRequired,
-  colSpan: PropTypes.number.isRequired,
   rowSpan: PropTypes.number,
-  left: PropTypes.number.isRequired,
   height: PropTypes.number,
   timeTableCellHeight: PropTypes.number,
   hasBrightBorder: PropTypes.bool,
   children: PropTypes.node,
 };
 
-Cell.defaultProps = {
+AllDayCell.defaultProps = {
   className: undefined,
   hasBrightBorder: true,
   rowSpan: 1,

@@ -26,6 +26,8 @@ const AllDayAppointmentLayerPlaceholder = () =>
 const AllDayPanelPlaceholder = params => <TemplatePlaceholder name="allDayPanel" params={params} />;
 const CellPlaceholder = params => <TemplatePlaceholder name="allDayPanelCell" params={params} />;
 
+const GroupingPanelPlaceholder = () => <TemplatePlaceholder name="allDayGroupingPanel" />;
+
 class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelState> {
   state: AllDayPanelState = {
     elementsMeta: {},
@@ -88,8 +90,13 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
 
         <Template name="dayScaleEmptyCell">
           <TemplateConnector>
-            {({ currentView }) => {
+            {({ currentView, groupOrientation }) => {
               if (currentView === MONTH) return null;
+              if (groupOrientation?.(currentView.name) === VERTICAL_GROUP_ORIENTATION) {
+                return (
+                  <GroupingPanelPlaceholder />
+                );
+              }
               return (
                 <TitleCell getMessage={getMessage} />
               );

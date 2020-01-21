@@ -4,14 +4,16 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'clsx';
-import { GROUPING_PANEL_VERTICAL_CELL_WIDTH } from '../constants';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ spacing }) => ({
   layout: {
     tableLayout: 'fixed',
-    width: ({ cellsInRow }) => `${cellsInRow * GROUPING_PANEL_VERTICAL_CELL_WIDTH}px`,
+    width: ({ width }) => {
+      console.log(`${spacing(width / 8)}px`)
+      return `${spacing(width / 8)}px`;
+    },
   },
-});
+}));
 
 export const VerticalLayout = ({
   rowComponent: Row,
@@ -19,10 +21,12 @@ export const VerticalLayout = ({
   groups,
   rowSpan,
   timeTableCellHeight,
+  width,
   className,
   ...restProps
 }) => {
-  const classes = useStyles({ cellsInRow: groups.length });
+  console.log(width)
+  const classes = useStyles({ width });
   return (
     <Table className={classNames(classes.layout, className)} {...restProps}>
       <TableBody>
@@ -70,6 +74,7 @@ VerticalLayout.propTypes = {
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   rowSpan: PropTypes.number.isRequired,
   timeTableCellHeight: PropTypes.number,
+  width: PropTypes.number.isRequired,
   className: PropTypes.string,
 };
 

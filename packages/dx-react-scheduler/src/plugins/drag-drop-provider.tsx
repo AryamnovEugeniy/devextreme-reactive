@@ -142,7 +142,6 @@ class DragDropProviderBase extends React.PureComponent<
     const targetData = cellData(
       timeTableIndex, allDayIndex, viewCellsData, groups, groupOrientation,
     );
-    console.log(targetData)
     const targetType = cellType(targetData);
     const insidePart = calculateInsidePart(
       clientOffset.y, tableCellElementsMeta.getCellRects, timeTableIndex,
