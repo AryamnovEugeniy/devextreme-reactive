@@ -190,7 +190,7 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
                   groupingPanelComponent={
                     isVerticalGrouping ? GroupingPanelPlaceholder : undefined
                   }
-                  groupingPanelSize={groups?.length}
+                  groupingPanelSize={isVerticalGrouping ? groups?.length : 0}
                   {...layoutProps}
                 />
               );

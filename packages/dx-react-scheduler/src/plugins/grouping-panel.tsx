@@ -60,6 +60,7 @@ class GroupingPanelBase extends React.PureComponent<GroupingPanelProps> {
                   cellComponent={cellComponent}
                   groups={groups}
                   rowSpan={viewCellsData.length}
+                  timeTableCellHeight={currentView.type === 'month' ? 100 : 48}
                 />
               )}
           </TemplateConnector>

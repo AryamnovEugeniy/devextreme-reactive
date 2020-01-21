@@ -22,7 +22,9 @@ const useStyles = makeStyles(theme => ({
     '&:last-child': {
       borderRight: 'none',
     },
-    height: ({ height }) => (height ? theme.spacing(6 * height) : undefined),
+    height: ({ height, timeTableCellHeight }) => (
+      height ? theme.spacing((timeTableCellHeight * height) / 8) : undefined
+    ),
   },
   text: {
     ...theme.typography.caption,
@@ -46,9 +48,10 @@ export const Cell = React.memo(({
   hasBrightBorder,
   children,
   height,
+  timeTableCellHeight,
   ...restProps
 }) => {
-  const classes = useStyles({ left, hasBrightBorder, height });
+  const classes = useStyles({ left, hasBrightBorder, height, timeTableCellHeight });
   return (
     <TableCell
       className={classNames(classes.cell, className)}
@@ -71,6 +74,7 @@ Cell.propTypes = {
   rowSpan: PropTypes.number,
   left: PropTypes.number.isRequired,
   height: PropTypes.number,
+  timeTableCellHeight: PropTypes.number,
   hasBrightBorder: PropTypes.bool,
   children: PropTypes.node,
 };
@@ -80,5 +84,6 @@ Cell.defaultProps = {
   hasBrightBorder: true,
   rowSpan: 1,
   height: undefined,
+  timeTableCellHeight: 48,
   children: null,
 };

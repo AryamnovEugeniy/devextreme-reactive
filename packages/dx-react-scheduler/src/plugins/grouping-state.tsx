@@ -3,7 +3,7 @@ import {
   Action, Plugin, Getter, StateHelper, ActionFn, createStateHelper,
 } from '@devexpress/dx-react-core';
 import {
-  ToggleGroupPayload, toggleExpandedGroups, VERTICAL_GROUP_ORIENTATION,
+  ToggleGroupPayload, toggleExpandedGroups, VERTICAL_GROUP_ORIENTATION, HORIZONTAL_GROUP_ORIENTATION,
 } from '@devexpress/dx-scheduler-core';
 import { GroupingStateProps, GroupingStateState } from '../types';
 

@@ -12,7 +12,9 @@ const getCellRect: GetCellRectHorizontalFn = (
   const cellIndex = multiline
     ? getMonthCellIndexByAppointmentData(
       viewCellsData, groupOrientation, groupsNumber, date, appointment, takePrev,
-    ) : getAllDayCellIndexByAppointmentData(viewCellsData, date, appointment, takePrev);
+    ) : getAllDayCellIndexByAppointmentData(
+      viewCellsData, groupOrientation, groupsNumber, date, appointment, takePrev,
+    );
 
   const {
     top,

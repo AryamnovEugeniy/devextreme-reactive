@@ -8,7 +8,7 @@ import {
   TemplateConnector,
   PluginComponents,
 } from '@devexpress/dx-react-core';
-import { allDayCells, calculateAllDayDateIntervals } from '@devexpress/dx-scheduler-core';
+import { allDayCells, calculateAllDayDateIntervals, VERTICAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 import moment from 'moment';
 
 import { AllDayPanelProps, AllDayPanelState } from '../types';
@@ -74,7 +74,7 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
     } = this.props;
     const { elementsMeta } = this.state;
     const getMessage = this.getMessageFormatter(messages, defaultMessages);
-  
+
     return (
       <Plugin
         name="AllDayPanel"
@@ -115,7 +115,7 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
           <TemplatePlaceholder />
           <TemplateConnector>
             {({
-              currentView, formatDate, viewCellsData,
+              currentView, formatDate, viewCellsData, groups, groupOrientation,
             }) => {
               if (currentView.name === MONTH) return null;
               return (
@@ -126,6 +126,10 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
                     cellsData={this.allDayCellsData(viewCellsData)}
                     setCellElementsMeta={this.updateCellElementsMeta}
                     formatDate={formatDate}
+                    groups={
+                      groupOrientation?.(currentView?.name) === VERTICAL_GROUP_ORIENTATION
+                      ? groups : undefined
+                    }
                   />
                   <AppointmentLayer>
                     <AllDayAppointmentLayerPlaceholder />

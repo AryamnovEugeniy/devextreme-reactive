@@ -18,6 +18,7 @@ export const VerticalLayout = ({
   cellComponent: Cell,
   groups,
   rowSpan,
+  timeTableCellHeight,
   className,
   ...restProps
 }) => {
@@ -51,6 +52,7 @@ export const VerticalLayout = ({
                     left={0}
                     hasBrightBorder={hasBrightBorder}
                     colSpan={1}
+                    timeTableCellHeight={timeTableCellHeight}
                   />
                 );
               })}
@@ -67,9 +69,11 @@ VerticalLayout.propTypes = {
   cellComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   rowSpan: PropTypes.number.isRequired,
+  timeTableCellHeight: PropTypes.number,
   className: PropTypes.string,
 };
 
 VerticalLayout.defaultProps = {
+  timeTableCellHeight: 48,
   className: undefined,
 };

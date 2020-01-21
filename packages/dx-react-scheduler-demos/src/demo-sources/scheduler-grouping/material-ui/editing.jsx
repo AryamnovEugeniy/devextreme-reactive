@@ -78,7 +78,7 @@ export default class Demo extends React.PureComponent {
             grouping={grouping}
           />
 
-          <MonthView />
+          {/* <MonthView /> */}
           <WeekView
             startDayHour={9}
             endDayHour={17}

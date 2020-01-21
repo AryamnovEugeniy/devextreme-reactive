@@ -11,6 +11,7 @@ const styles = theme => ({
     padding: 0,
     height: theme.spacing(5.75),
     borderLeft: getBorder(theme),
+    borderTop: getBorder(theme),
     borderBottom: 'none',
     boxSizing: 'border-box',
     '&:first-child': {
@@ -22,6 +23,9 @@ const styles = theme => ({
     '&:focus': {
       backgroundColor: fade(theme.palette.primary.main, 0.15),
       outline: 0,
+    },
+    'tr:first-child &': {
+      borderTop: 'none',
     },
   },
   rightBorderCell: {

@@ -28,6 +28,8 @@ export namespace GroupingPanel {
     groups: Array<Array<Group>>;
     /** Indicates the number of cells in the Scheduler's timetable. */
     rowSpan: number;
+    /** Indicates the height of a timetable cell in pixels. */
+    timeTableCellHeight: number;
   }
   /** Describes properties passed to a component that renders a row on the grouping panel. */
   export interface RowProps extends BaseView.RowProps {}

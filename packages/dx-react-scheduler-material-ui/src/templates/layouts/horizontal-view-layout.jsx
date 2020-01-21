@@ -30,8 +30,23 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
     boxSizing: 'border-box',
     float: 'left',
-    width: ({ groupingPanelSize }) => `${theme.spacing(10)
-      + groupingPanelSize * GROUPING_PANEL_VERTICAL_CELL_WIDTH + 1}px`,
+    width: ({ groupingPanelSize }) => `${groupingPanelSize * GROUPING_PANEL_VERTICAL_CELL_WIDTH}px`,
+  },
+  mainTable: {
+    width: ({ groupingPanelSize }) => `calc(100% -
+      ${groupingPanelSize * GROUPING_PANEL_VERTICAL_CELL_WIDTH}px)`,
+    float: 'right',
+  },
+  stickyElement: {
+    tableLayout: 'fixed',
+    position: 'sticky',
+    overflow: 'visible',
+    background: theme.palette.background.paper,
+  },
+  fullScreenContainer: {
+    minWidth: '100%',
+    display: 'table',
+    position: 'relative',
   },
 }));
 
@@ -86,17 +101,32 @@ export const HorizontalViewLayout = React.memo(({
           ref={layoutHeaderRef}
           className={classes.stickyHeader}
         >
-          <DayScale />
+          <div className={classNames({
+            [classes.stickyElement]: true,
+            [classes.leftPanel]: true,
+          })}
+          />
+          <div className={classes.mainTable}>
+            <DayScale />
+          </div>
         </Grid>
         <Grid
           className={classes.timeTable}
         >
-          {/* <div
+          <div
             ref={leftPanelRef}
+            className={classNames({
+              [classes.stickyElement]: true,
+              [classes.leftPanel]: true,
+            })}
           >
             <GroupingPanel />
-          </div> */}
-          <TimeTable />
+          </div>
+          <div className={classes.mainTable}>
+            <div className={classes.fullScreenContainer}>
+              <TimeTable />
+            </div>
+          </div>
         </Grid>
       </div>
     </Grid>

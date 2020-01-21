@@ -112,7 +112,7 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
             )}
           </TemplateConnector>
         </Template>
-        {/* <Template
+        <Template
           name="allDayAppointmentLayer"
         >
           <TemplateConnector>
@@ -121,10 +121,10 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
               startViewDate, endViewDate, groupOrientation, currentView, groups,
             }) => this.updateAllDayAppointments(
               allDayAppointments, viewCellsData, allDayElementsMeta,
-              startViewDate, endViewDate, currentView, groups,
+              startViewDate, endViewDate, groupOrientation, currentView, groups,
             )}
           </TemplateConnector>
-        </Template> */}
+        </Template>
         <Template
           name="appointment"
         >
