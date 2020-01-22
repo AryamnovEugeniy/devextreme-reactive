@@ -7,10 +7,10 @@ import {
   PluginComponents,
 } from '@devexpress/dx-react-core';
 import {
-  viewCellsData as viewCellsDataCore, calculateWeekDateIntervals,
+  viewCellsData as viewCellsDataCore, calculateWeekDateIntervals, timeScaleCells,
 } from '@devexpress/dx-scheduler-core';
 import { BasicView } from './basic-view';
-import { VerticalViewProps } from '../types';
+import { VerticalViewProps, BaseView } from '../types';
 
 const TYPE = 'day';
 const viewCellsDataBaseComputed = (
@@ -122,7 +122,7 @@ class DayViewBase extends React.PureComponent<VerticalViewProps> {
 
         <Template name="timeScale">
           <TemplateConnector>
-            {({ currentView, viewCellsData, formatDate }) => {
+            {({ currentView, viewCellsData, groups, formatDate }) => {
               if (currentView.name !== viewName) return <TemplatePlaceholder />;
               return (
                 <TimeScale
@@ -131,6 +131,7 @@ class DayViewBase extends React.PureComponent<VerticalViewProps> {
                   rowComponent={timeScaleTicksRowComponent}
                   cellsData={viewCellsData}
                   formatDate={formatDate}
+                  groups={groups}
                 />
               );
             }}

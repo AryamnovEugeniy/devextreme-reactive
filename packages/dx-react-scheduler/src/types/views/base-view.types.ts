@@ -76,6 +76,8 @@ export namespace BaseView {
   export interface TimeScaleLayoutProps {
     /** Specifies the cells meta data. */
     cellsData: BaseView.CellData[][];
+    /** Groups shown in the Scheduler. */
+    groups?: Group[][];
     /** A component that renders a time scale cell. */
     labelComponent: React.ComponentType<BaseView.TimeScaleLabelProps>;
     /** @internal */

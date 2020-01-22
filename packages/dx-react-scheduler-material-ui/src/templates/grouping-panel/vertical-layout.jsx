@@ -9,7 +9,6 @@ const useStyles = makeStyles(({ spacing }) => ({
   layout: {
     tableLayout: 'fixed',
     width: ({ width }) => {
-      console.log(`${spacing(width / 8)}px`)
       return `${spacing(width / 8)}px`;
     },
   },
@@ -25,7 +24,6 @@ export const VerticalLayout = ({
   className,
   ...restProps
 }) => {
-  console.log(width)
   const classes = useStyles({ width });
   return (
     <Table className={classNames(classes.layout, className)} {...restProps}>
@@ -46,7 +44,9 @@ export const VerticalLayout = ({
           return (
             <Row>
               {cells.map(({
-                group: cellGroup, rowSpan: cellRowSpan, height, hasBrightBorder,
+                group: cellGroup,
+                rowSpan: cellRowSpan,
+                height, hasBrightBorder,
               }) => {
                 return (
                   <Cell
