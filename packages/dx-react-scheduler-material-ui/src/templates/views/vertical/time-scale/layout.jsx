@@ -63,7 +63,6 @@ const LayoutBase = ({
   ...restProps
 }) => {
   const groupsNumber = groups[groups.length - 1].length;
-  console.log(cellsData)
   const groupHeight = cellsData.length / groupsNumber;
   return (
     <Grid container direction="row" {...restProps}>

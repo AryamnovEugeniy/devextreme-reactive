@@ -8,7 +8,7 @@ import {
   groupAppointments, expandGroupedAppointment, addGroupInfoToCell,
 } from './helpers';
 import { sliceAppointmentsByDays } from '../all-day-panel/helpers';
-import { HORIZONTAL_GROUP_ORIENTATION } from '../../constants';
+import { HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION } from '../../constants';
 
 export const filterResourcesByGrouping: PureComputed<
   [Array<ValidResource>, Array<Grouping>], Array<ValidResource>
@@ -63,6 +63,7 @@ const expandCellsWithGroupedByDateData: ExpandGroupingPanelCellFn = (
       group: Group, index: number,
     ) => addGroupInfoToCell(
       group, groups, sortedResources, viewCell, index,
+      false, HORIZONTAL_GROUP_ORIENTATION,
     ));
     groupedCells[groupedCells.length - 1] = {
       ...groupedCells[groupedCells.length - 1],
@@ -81,6 +82,7 @@ const expandHorizontallyGroupedCells: ExpandGroupingPanelCellFn = (
     return viewCellsData.map((viewCellsRow: ViewCell[]) =>
       addGroupInfoToCells(
         group, groups, sortedResources, viewCellsRow, index,
+        false, HORIZONTAL_GROUP_ORIENTATION,
       ) as ViewCell[],
     );
   }
@@ -88,6 +90,7 @@ const expandHorizontallyGroupedCells: ExpandGroupingPanelCellFn = (
     ...item,
     ...addGroupInfoToCells(
       group, groups, sortedResources, viewCellsData[id], index,
+      false, HORIZONTAL_GROUP_ORIENTATION,
     ),
   ]);
 }, [[]] as ViewCell[][]);
@@ -98,17 +101,19 @@ const expandVerticallyGroupedCells: ExpandGroupingPanelCellFn = (
   acc: ViewCell[][], group: Group, index: number,
 ) => {
   if (index === 0) {
-    return viewCellsData.map((viewCellsRow: ViewCell[]) =>
-      addGroupInfoToCells(
-        group, groups, sortedResources, viewCellsRow, index,
-      ) as ViewCell[],
-    );
+    return viewCellsData.map((viewCellsRow: ViewCell[], viewRowIndex: number) => {
+      return addGroupInfoToCells(
+        group, groups, sortedResources, viewCellsRow,
+        index, viewRowIndex === viewCellsData.length - 1, VERTICAL_GROUP_ORIENTATION,
+      ) as ViewCell[];
+    });
   }
   return [
     ...acc,
-    ...viewCellsData.map((viewCellsRow: ViewCell[]) =>
+    ...viewCellsData.map((viewCellsRow: ViewCell[], viewRowIndex: number) =>
       addGroupInfoToCells(
-        group, groups, sortedResources, viewCellsRow, index,
+        group, groups, sortedResources, viewCellsRow,
+        index, viewRowIndex === viewCellsData.length - 1, VERTICAL_GROUP_ORIENTATION,
       ) as ViewCell[],
     ),
   ];

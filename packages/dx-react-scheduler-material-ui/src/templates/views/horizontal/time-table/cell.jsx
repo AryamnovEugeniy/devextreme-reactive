@@ -4,7 +4,7 @@ import classNames from 'clsx';
 import TableCell from '@material-ui/core/TableCell';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
-import { DAY_OPTIONS, DAY_SHORT_MONTH_OPTIONS } from '@devexpress/dx-scheduler-core';
+import { DAY_OPTIONS, DAY_SHORT_MONTH_OPTIONS, HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 import { getBorder, getBrightBorder } from '../../../utils';
 import { SMALL_LAYOUT_MEDIA_QUERY } from '../../../constants';
 
@@ -73,6 +73,9 @@ const styles = theme => ({
       borderRight: 'none',
     },
   },
+  verticallyGroupedCell: {
+    borderBottom: getBrightBorder(theme),
+  },
 });
 
 const CellBase = React.memo(({
@@ -86,6 +89,8 @@ const CellBase = React.memo(({
   isShaded,
   hasRightBorder,
   groupingInfo,
+  endOfGroup,
+  groupOrientation,
   ...restProps
 }) => {
   const isFirstMonthDay = startDate.getDate() === 1;
@@ -97,6 +102,7 @@ const CellBase = React.memo(({
         [classes.cell]: true,
         [classes.shadedCell]: isShaded,
         [classes.rightBorderCell]: hasRightBorder,
+        [classes.verticallyGroupedCell]: endOfGroup && groupOrientation === VERTICAL_GROUP_ORIENTATION,
       }, className)}
       {...restProps}
     >
@@ -124,6 +130,8 @@ CellBase.propTypes = {
   isShaded: PropTypes.bool,
   hasRightBorder: PropTypes.bool,
   groupingInfo: PropTypes.arrayOf(PropTypes.object),
+  endOfGroup: PropTypes.bool,
+  groupOrientation: PropTypes.oneOf([HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION]),
 };
 
 CellBase.defaultProps = {
@@ -134,6 +142,8 @@ CellBase.defaultProps = {
   isShaded: false,
   hasRightBorder: false,
   groupingInfo: undefined,
+  endOfGroup: false,
+  groupOrientation: HORIZONTAL_GROUP_ORIENTATION,
 };
 
 export const Cell = withStyles(styles, { name: 'Cell' })(CellBase);
