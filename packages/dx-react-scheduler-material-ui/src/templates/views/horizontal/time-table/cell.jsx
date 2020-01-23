@@ -102,7 +102,8 @@ const CellBase = React.memo(({
         [classes.cell]: true,
         [classes.shadedCell]: isShaded,
         [classes.rightBorderCell]: hasRightBorder,
-        [classes.verticallyGroupedCell]: endOfGroup && groupOrientation === VERTICAL_GROUP_ORIENTATION,
+        [classes.verticallyGroupedCell]: endOfGroup
+          && groupOrientation === VERTICAL_GROUP_ORIENTATION,
       }, className)}
       {...restProps}
     >

@@ -122,18 +122,22 @@ class DayViewBase extends React.PureComponent<VerticalViewProps> {
 
         <Template name="timeScale">
           <TemplateConnector>
-            {({ currentView, viewCellsData, groups, formatDate, groupOrientation }) => {
+            {({
+              currentView, viewCellsData, groups, formatDate, groupOrientation: getGroupOrientation,
+            }) => {
               if (currentView.name !== viewName) return <TemplatePlaceholder />;
+              const groupOrientation = getGroupOrientation?.(viewName);
               return (
                 <TimeScale
                   labelComponent={TimeScaleLabel}
                   tickCellComponent={timeScaleTickCellComponent}
                   rowComponent={timeScaleTicksRowComponent}
                   cellsData={timeScaleCells(
-                    viewCellsData, groupOrientation?.(viewName), groups,
+                    viewCellsData, groupOrientation, groups,
                   ) as BaseView.CellData[][]}
                   formatDate={formatDate}
                   groups={groups}
+                  groupOrientation={groupOrientation}
                 />
               );
             }}

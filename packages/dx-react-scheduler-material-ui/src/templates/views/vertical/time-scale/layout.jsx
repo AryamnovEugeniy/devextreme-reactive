@@ -3,6 +3,7 @@ import * as PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import { TicksLayout } from './ticks-layout';
+import { HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 
 const getLabelsForSingleGroup = (cellsData, groupIndex, groupHeight) => {
   const currentGroupIndex = groupIndex * groupHeight;
@@ -59,15 +60,14 @@ const LayoutBase = ({
   cellsData,
   formatDate,
   groups,
+  groupOrientation,
   classes,
   ...restProps
 }) => {
-  const groupsNumber = groups[groups.length - 1].length;
-  const groupHeight = cellsData.length / groupsNumber;
   return (
     <Grid container direction="row" {...restProps}>
       <div className={classes.timeScaleContainer}>
-        {groups[groups.length - 1].map((group, groupIndex) => {
+        {groups[groups.length - 1].map(() => {
           return (
             <>
               <div className={classes.timeScale}>
@@ -101,18 +101,6 @@ const LayoutBase = ({
   );
 };
 
-/* {getLabelsForAllGroups(cellsData, groupsNumber, groupHeight).map(({
-          key, time, groupingInfo, endOfGroup,
-        }) => (
-          <Label
-            // key={key}
-            time={time}
-            groupingInfo={groupingInfo}
-            formatDate={formatDate}
-            endOfGroup={endOfGroup}
-          />
-        ))} */
-
 LayoutBase.propTypes = {
   cellsData: PropTypes.arrayOf(Array).isRequired,
   labelComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
@@ -120,11 +108,13 @@ LayoutBase.propTypes = {
   tickCellComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   formatDate: PropTypes.func.isRequired,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
+  groupOrientation: PropTypes.anyOf([HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION]),
   classes: PropTypes.object.isRequired,
 };
 
 LayoutBase.defaultProps = {
   groups: [[{}]],
+  groupOrientation: HORIZONTAL_GROUP_ORIENTATION,
 };
 
 export const Layout = withStyles(styles, { name: 'Layout' })(LayoutBase);
