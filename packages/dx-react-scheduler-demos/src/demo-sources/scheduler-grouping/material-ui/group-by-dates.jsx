@@ -16,6 +16,7 @@ import {
   DragDropProvider,
   GroupingPanel,
   WeekView,
+  MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { data as appointments } from '../../../demo-data/grouping';
 
@@ -68,7 +69,7 @@ export default class Demo extends React.PureComponent {
         resourceName: 'priorityId',
       }],
       groupByDate,
-      isGroupByDate: true,
+      isGroupByDate: false,
     };
 
     this.commitChanges = this.commitChanges.bind(this);
@@ -123,6 +124,7 @@ export default class Demo extends React.PureComponent {
               groupByDate={groupingByDate}
             />
 
+            <MonthView />
             <WeekView
               startDayHour={8.5}
               endDayHour={17}

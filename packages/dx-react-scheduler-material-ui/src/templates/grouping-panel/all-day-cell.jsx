@@ -9,16 +9,11 @@ const useStyles = makeStyles(theme => ({
   cell: {
     userSelect: 'none',
     padding: 0,
-    borderBottom: 'none',
-    borderTop: getBrightBorder(theme),
     paddingTop: theme.spacing(0.5),
     boxSizing: 'border-box',
     borderRight: ({ hasBrightBorder }) => (
-      hasBrightBorder ? getBrightBorder(theme) : getBorder(theme)
+      hasBrightBorder ? getBorder(theme) : getBorder(theme)
     ),
-    'tr:first-child &': {
-      borderTop: 'none',
-    },
     '&:last-child': {
       borderRight: 'none',
     },
@@ -35,6 +30,12 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     lineHeight: 1.5,
   },
+  verticalCell: ({ rowSpan }) => ({
+    borderBottom: getBorder(theme),
+    [`tr:nth-last-child(${rowSpan}) &`]: {
+      borderBottom: 'none',
+    },
+  }),
 }));
 
 export const AllDayCell = React.memo(({
@@ -48,11 +49,14 @@ export const AllDayCell = React.memo(({
   ...restProps
 }) => {
   const classes = useStyles({
-    hasBrightBorder, height, timeTableCellHeight,
+    hasBrightBorder, height, timeTableCellHeight, rowSpan,
   });
   return (
     <TableCell
-      className={classNames(classes.cell, className)}
+      className={classNames({
+        [classes.cell]: true,
+        [classes.verticalCell]: true,
+      }, className)}
       rowSpan={rowSpan}
       {...restProps}
     >

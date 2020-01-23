@@ -10,6 +10,7 @@ import { cellsMeta, getViewCellKey } from '../utils';
 const styles = {
   table: {
     tableLayout: 'fixed',
+    borderCollapse: 'separate',
   },
 };
 

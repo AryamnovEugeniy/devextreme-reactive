@@ -4,13 +4,13 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'clsx';
+import { VERTICAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 
 const useStyles = makeStyles(({ spacing }) => ({
   layout: {
     tableLayout: 'fixed',
-    width: ({ width }) => {
-      return `${spacing(width / 8)}px`;
-    },
+    borderCollapse: 'separate',
+    width: ({ width }) => `${spacing(width / 8)}px`,
   },
 }));
 
@@ -57,6 +57,7 @@ export const VerticalLayout = ({
                     hasBrightBorder={hasBrightBorder}
                     colSpan={1}
                     timeTableCellHeight={timeTableCellHeight}
+                    groupOrientation={VERTICAL_GROUP_ORIENTATION}
                   />
                 );
               })}

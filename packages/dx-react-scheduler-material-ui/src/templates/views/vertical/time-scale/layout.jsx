@@ -43,10 +43,10 @@ const getLabelsForAllGroups = (cellsData, groupsNumber, groupHeight) => {
 };
 
 const styles = ({ spacing }) => ({
-  timeScale: {
+  timeScaleContainer: {
     width: `calc(100% - ${spacing(1)}px)`,
-    borderCollapse: 'collapse',
   },
+  // timeScale: {}
   ticks: {
     width: spacing(1),
   },
@@ -67,22 +67,42 @@ const LayoutBase = ({
   const groupHeight = cellsData.length / groupsNumber;
   return (
     <Grid container direction="row" {...restProps}>
-      <div className={classes.timeScale}>
-        {/* <Label key={cellsData[0][0].startDate} />
-        {cellsData.map((days, index) => (
-          index !== cellsData.length - 1 && (
-            <Label
-              time={days[0].endDate}
-              formatDate={formatDate}
-              key={days[0].endDate}
-              groupingInfo={days[0].groupingInfo}
-            />
-          )
-        ))}
-        <Label
-          key={cellsData[cellsData.length - 1][0].endDate}
-        /> */}
-        {getLabelsForAllGroups(cellsData, groupsNumber, groupHeight).map(({
+      <div className={classes.timeScaleContainer}>
+        {groups[groups.length - 1].map((group, groupIndex) => {
+          return (
+            <>
+              <div className={classes.timeScale}>
+                <Label key={cellsData[0][0].startDate} />
+                {cellsData.map((days, index) => (
+                  index !== cellsData.length - 1 && (
+                    <Label
+                      time={days[0].endDate}
+                      formatDate={formatDate}
+                      key={days[0].endDate}
+                      groupingInfo={days[0].groupingInfo}
+                    />
+                  )
+                ))}
+                <Label
+                  key={cellsData[cellsData.length - 1][0].endDate}
+                  endOfGroup
+                />
+              </div>
+            </>
+          );
+        })}
+      </div>
+      <TicksLayout
+        rowComponent={rowComponent}
+        cellComponent={tickCellComponent}
+        cellsData={[...cellsData, ...cellsData, ...cellsData, ...cellsData]}
+        className={classes.ticks}
+      />
+    </Grid>
+  );
+};
+
+/* {getLabelsForAllGroups(cellsData, groupsNumber, groupHeight).map(({
           key, time, groupingInfo, endOfGroup,
         }) => (
           <Label
@@ -92,17 +112,7 @@ const LayoutBase = ({
             formatDate={formatDate}
             endOfGroup={endOfGroup}
           />
-        ))}
-      </div>
-      <TicksLayout
-        rowComponent={rowComponent}
-        cellComponent={tickCellComponent}
-        cellsData={cellsData}
-        className={classes.ticks}
-      />
-    </Grid>
-  );
-};
+        ))} */
 
 LayoutBase.propTypes = {
   cellsData: PropTypes.arrayOf(Array).isRequired,
@@ -115,7 +125,7 @@ LayoutBase.propTypes = {
 };
 
 LayoutBase.defaultProps = {
-  groups: [[undefined]],
+  groups: [[{}]],
 };
 
 export const Layout = withStyles(styles, { name: 'Layout' })(LayoutBase);

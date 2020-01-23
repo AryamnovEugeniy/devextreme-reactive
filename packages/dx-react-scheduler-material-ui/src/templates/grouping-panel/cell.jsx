@@ -3,22 +3,20 @@ import * as PropTypes from 'prop-types';
 import classNames from 'clsx';
 import TableCell from '@material-ui/core/TableCell';
 import { makeStyles } from '@material-ui/core/styles';
+import { HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION } from '@devexpress/dx-scheduler-core';
 import { getBrightBorder, getBorder } from '../utils';
+
+// const createQuery =
 
 const useStyles = makeStyles(theme => ({
   cell: {
     userSelect: 'none',
     padding: 0,
-    borderBottom: 'none',
-    borderTop: getBrightBorder(theme),
     paddingTop: theme.spacing(0.5),
     boxSizing: 'border-box',
     borderRight: ({ hasBrightBorder }) => (
       hasBrightBorder ? getBrightBorder(theme) : getBorder(theme)
     ),
-    'tr:first-child &': {
-      borderTop: 'none',
-    },
     '&:last-child': {
       borderRight: 'none',
     },
@@ -37,6 +35,19 @@ const useStyles = makeStyles(theme => ({
     left: ({ left }) => theme.spacing(left / 8),
     lineHeight: 1.5,
   },
+  horizontalCell: {
+    borderBottom: 'none',
+    borderTop: getBrightBorder(theme),
+    'tr:first-child &': {
+      borderTop: 'none',
+    },
+  },
+  verticalCell: ({ rowSpan }) => ({
+    borderBottom: getBrightBorder(theme),
+    [`tr:nth-last-child(${rowSpan}) &`]: {
+      borderBottom: 'none',
+    },
+  }),
 }));
 
 export const Cell = React.memo(({
@@ -49,14 +60,19 @@ export const Cell = React.memo(({
   children,
   height,
   timeTableCellHeight,
+  groupOrientation,
   ...restProps
 }) => {
   const classes = useStyles({
-    left, hasBrightBorder, height, timeTableCellHeight,
+    left, hasBrightBorder, height, timeTableCellHeight, rowSpan,
   });
   return (
     <TableCell
-      className={classNames(classes.cell, className)}
+      className={classNames({
+        [classes.cell]: true,
+        [classes.horizontalCell]: groupOrientation === HORIZONTAL_GROUP_ORIENTATION,
+        [classes.verticalCell]: groupOrientation === VERTICAL_GROUP_ORIENTATION,
+      }, className)}
       colSpan={colSpan}
       rowSpan={rowSpan}
       {...restProps}
@@ -78,6 +94,7 @@ Cell.propTypes = {
   height: PropTypes.number,
   timeTableCellHeight: PropTypes.number,
   hasBrightBorder: PropTypes.bool,
+  groupOrientation: PropTypes.string,
   children: PropTypes.node,
 };
 
@@ -87,5 +104,6 @@ Cell.defaultProps = {
   rowSpan: 1,
   height: undefined,
   timeTableCellHeight: 48,
+  groupOrientation: HORIZONTAL_GROUP_ORIENTATION,
   children: null,
 };

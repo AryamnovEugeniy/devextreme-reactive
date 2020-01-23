@@ -113,6 +113,7 @@ export default class Demo extends React.PureComponent {
       <Paper>
         <Scheduler
           data={data}
+          height={660}
         >
           <ViewState
             defaultCurrentDate="2017-05-28"
