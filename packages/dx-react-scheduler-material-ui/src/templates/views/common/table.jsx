@@ -44,9 +44,9 @@ export const Table = React.forwardRef(({
       className={classNames(classes.table, className)}
       {...restProps}
     >
-      <TableBody>
+      {/* <TableBody> */}
         {children}
-      </TableBody>
+      {/* </TableBody> */}
     </TableMUI>
   );
 });

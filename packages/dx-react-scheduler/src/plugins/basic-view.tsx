@@ -30,6 +30,8 @@ const DayScaleEmptyCellPlaceholder = () => <TemplatePlaceholder name="dayScaleEm
 
 const GroupingPanelPlaceholder = () => <TemplatePlaceholder name="groupingPanel" />;
 
+const AllDayPanelPlaceholder = params => <TemplatePlaceholder name="allDayPanel" params={params} />;
+
 class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> {
   state = {
     timeTableElementsMeta: {},
@@ -242,20 +244,22 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
 
         <Template name="timeTable">
           <TemplateConnector>
-            {({ formatDate, currentView, viewCellsData }) => {
+            {({ formatDate, currentView, viewCellsData, groups }) => {
               if (currentView.name !== viewName) return <TemplatePlaceholder />;
               return (
                 <>
+                  <AppointmentLayer>
+                    <TimeTableAppointmentLayer />
+                  </AppointmentLayer>
                   <TimeTableLayout
                     cellsData={viewCellsData}
+                    allDayPanelComponent={AllDayPanelPlaceholder}
                     rowComponent={timeTableRowComponent}
                     cellComponent={CellPlaceholder}
                     formatDate={formatDate}
                     setCellElementsMeta={this.updateCellElementsMeta}
+                    groupCount={groups ? groups[groups.length - 1].length : 1}
                   />
-                  <AppointmentLayer>
-                    <TimeTableAppointmentLayer />
-                  </AppointmentLayer>
                 </>
               );
             }}

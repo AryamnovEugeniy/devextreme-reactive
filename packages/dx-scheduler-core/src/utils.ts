@@ -212,8 +212,7 @@ export const unwrapGroups: PureComputed<
 export const getAppointmentStyle: PureComputed<
   [Rect], React.CSSProperties
 > = ({
-  top, left,
-  width, height,
+  top, left, width, height,
 }) => ({
   height,
   width: `${width}%`,

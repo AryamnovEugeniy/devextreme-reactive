@@ -8,13 +8,30 @@ import { getBorder, getBrightBorder } from '../utils';
 
 const styles = theme => ({
   cell: {
+    background: theme.palette.background.paper,
     padding: 0,
     height: theme.spacing(5.75),
     boxSizing: 'border-box',
     borderRight: getBorder(theme),
+    '&:focus': {
+      outline: 0,
+    },
     '&:last-child': {
       borderRight: 'none',
     },
+    'tr:last-child &': {
+      borderBottom: 'none',
+    },
+    position: 'sticky',
+    top: '56px',
+    zIndex: 1,
+  },
+  brightRightBorder: {
+    borderRight: getBrightBorder(theme),
+  },
+  container: {
+    width: '100%',
+    height: '100%',
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
@@ -22,12 +39,6 @@ const styles = theme => ({
       backgroundColor: fade(theme.palette.primary.main, 0.15),
       outline: 0,
     },
-    'tr:last-child &': {
-      borderBottom: 'none',
-    },
-  },
-  brightRightBorder: {
-    borderRight: getBrightBorder(theme),
   },
 });
 
@@ -39,19 +50,24 @@ const CellBase = ({
   endDate,
   endOfGroup,
   groupingInfo,
+  groupId,
   // @deprecated
   hasRightBorder,
   ...restProps
 }) => (
   <TableCell
-    tabIndex={0}
+    // tabIndex={0}
     className={classNames({
       [classes.cell]: true,
       [classes.brightRightBorder]: endOfGroup || hasRightBorder,
+      [classes.blueCell]: groupId === 1,
     }, className)}
     {...restProps}
   >
-    {children}
+    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+    <div tabIndex={0} className={classes.container}>
+      {children}
+    </div>
   </TableCell>
 );
 

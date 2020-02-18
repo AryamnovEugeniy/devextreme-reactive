@@ -10,7 +10,7 @@ import {
 } from '@devexpress/dx-react-core';
 import {
   allDayCells, calculateAllDayDateIntervals,
-  VERTICAL_GROUP_ORIENTATION, HORIZONTAL_GROUP_ORIENTATION, VIEW_TYPES,
+  VERTICAL_GROUP_ORIENTATION, HORIZONTAL_GROUP_ORIENTATION, VIEW_TYPES, convertResourcesToPlain,
 } from '@devexpress/dx-scheduler-core';
 import moment from 'moment';
 
@@ -23,8 +23,8 @@ const pluginDependencies = [
 const defaultMessages = {
   allDay: 'All Day',
 };
-const AllDayAppointmentLayerPlaceholder = () =>
-  <TemplatePlaceholder name="allDayAppointmentLayer" />;
+const AllDayAppointmentLayerPlaceholder = params =>
+  <TemplatePlaceholder name="allDayAppointmentLayer" params={params} />;
 const AllDayPanelPlaceholder = params => <TemplatePlaceholder name="allDayPanel" params={params} />;
 const CellPlaceholder = params => <TemplatePlaceholder name="allDayPanelCell" params={params} />;
 
@@ -109,7 +109,7 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
             </TemplateConnector>
           )}
         </Template>
-        <Template name="dayScaleEmptyCell">
+        {/* <Template name="dayScaleEmptyCell">
           <TemplateConnector>
             {({ currentView, groupOrientation }) => {
               if (currentView.type === VIEW_TYPES.MONTH) return <TemplatePlaceholder />;
@@ -123,9 +123,9 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
               );
             }}
           </TemplateConnector>
-        </Template>
+        </Template> */}
 
-        <Template name="dayScale">
+        {/* <Template name="dayScale">
           <TemplatePlaceholder />
           <TemplateConnector>
             {({ currentView }) => {
@@ -137,40 +137,92 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
               );
             }}
           </TemplateConnector>
-        </Template>
+        </Template> */}
 
         <Template name="allDayPanel">
-          <TemplatePlaceholder />
-          <TemplateConnector>
-            {({
-              currentView, formatDate, viewCellsData,
-              groups, groupOrientation: getGroupOrientation,
-            }) => {
-              if (currentView.type === VIEW_TYPES.MONTH) return null;
-              const groupOrientation = getGroupOrientation?.(currentView?.name)
-                || HORIZONTAL_GROUP_ORIENTATION;
+        {(params: any) => (
+          <>
+            <TemplatePlaceholder />
+            <TemplateConnector>
+              {({
+                currentView, formatDate, viewCellsData,
+                groups, groupOrientation: getGroupOrientation,
+              }) => {
+                if (currentView.type === VIEW_TYPES.MONTH) return null;
+                const groupOrientation = HORIZONTAL_GROUP_ORIENTATION;
 
-              return (
-                <>
-                  <Layout
-                    cellComponent={CellPlaceholder}
-                    rowComponent={rowComponent}
-                    cellsData={this.allDayCellsData(viewCellsData)}
-                    setCellElementsMeta={this.updateCellElementsMeta}
-                    formatDate={formatDate}
-                    groups={
-                      groupOrientation === VERTICAL_GROUP_ORIENTATION
-                        ? groups : undefined
-                    }
-                    groupOrientation={groupOrientation}
-                  />
-                  <AppointmentLayer>
-                    <AllDayAppointmentLayerPlaceholder />
-                  </AppointmentLayer>
-                </>
-              );
-            }}
-          </TemplateConnector>
+                return (
+                  // <Container>
+                  <>
+                    <Layout
+                      cellComponent={CellPlaceholder}
+                      rowComponent={rowComponent}
+                      cellsData={this.allDayCellsData(viewCellsData)}
+                      setCellElementsMeta={this.updateCellElementsMeta}
+                      formatDate={formatDate}
+                      groups={
+                        groupOrientation === VERTICAL_GROUP_ORIENTATION
+                          ? groups : undefined
+                      }
+                      groupOrientation={groupOrientation}
+                      // appointmentLayerComponent={appointmentLayerComponent}
+                      {...params}
+                    />
+                  </>
+                  // </Container>
+                );
+              }}
+            </TemplateConnector>
+          </>
+        )}
+        </Template>
+        <Template name="timeTableAppointmentLayer">
+          <>
+            <TemplatePlaceholder />
+            <TemplateConnector>
+              {({
+                groups, groupOrientation, timeTableElementsMeta, currentView, viewCellsData,
+                scrollingStrategy,
+               }) => {
+                if (
+                  !groups || !groupOrientation
+                  || groupOrientation(currentView.name) === HORIZONTAL_GROUP_ORIENTATION
+                ) {
+                  return (
+                    <AppointmentLayer height={500}>
+                      <AllDayAppointmentLayerPlaceholder />
+                    </AppointmentLayer>
+                  );
+                }
+                if (!timeTableElementsMeta.getCellRects) return null;
+                const groupHeight = viewCellsData.length / groups[groups.length - 1].length;
+                const groupSize = groupHeight * viewCellsData[0].length;
+                return groups[groups.length - 1].map((group, index) => {
+                  const lastGroupCellIndex = groupSize * (index + 1) - 1;
+                  const lastPreviousGroupCellIndex = groupSize * index - 1;
+                  const lastGroupCellBottom = timeTableElementsMeta
+                    .getCellRects[lastGroupCellIndex]().bottom;
+                  const lastPreviousGroupCellBottom = lastPreviousGroupCellIndex === -1 ?
+                    scrollingStrategy.fixedTopHeight
+                    : timeTableElementsMeta.getCellRects[lastPreviousGroupCellIndex]().bottom;
+                  const height = lastGroupCellBottom - lastPreviousGroupCellBottom;
+                  const topOffset = scrollingStrategy.fixedTopHeight;
+                  return (
+                    <AppointmentLayer
+                      height={height}
+                      containerHeight={
+                        timeTableElementsMeta.getCellRects[groupSize * index]().height
+                      }
+                      topOffset={topOffset}
+                      key={index.toString()}
+                    >
+                      <AllDayAppointmentLayerPlaceholder groupId={index}/>
+                    </AppointmentLayer>
+                  );
+                });
+              }}
+            </TemplateConnector>
+          </>
         </Template>
 
         <Template name="allDayPanelCell">

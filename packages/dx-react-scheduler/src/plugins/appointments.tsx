@@ -15,7 +15,7 @@ import { AppointmentsProps } from '../types';
 
 const AppointmentPlaceholder = params => <TemplatePlaceholder name="appointment" params={params} />;
 
-const renderAppointments = rects => rects.map(({
+const renderAppointments = (rects, isAllDay) => rects.map(({
   dataItem, type: rectType, fromPrev, toNext,
   durationType, resources, ...geometry
 }, index) => (
@@ -27,7 +27,10 @@ const renderAppointments = rects => rects.map(({
     toNext={toNext}
     durationType={durationType}
     resources={resources}
-    style={getAppointmentStyle(geometry)}
+    style={{
+      ...getAppointmentStyle(geometry),
+      zIndex: isAllDay ? 2 : 1,
+    }}
   />
 ));
 
@@ -50,7 +53,8 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
     timeTableAppointments, viewCellsData, timeTableElementsMeta, currentView,
     startViewDate, endViewDate, cellDuration, groups, getGroupOrientation, groupByDate,
   ) => {
-    if (!isTimeTableElementsMetaActual(viewCellsData, timeTableElementsMeta)) return null;
+    // if (!isTimeTableElementsMetaActual(viewCellsData, timeTableElementsMeta)) return null;
+    if (!timeTableElementsMeta.getCellRects) return false;
 
     const groupOrientation = getGroupOrientation
       ? getGroupOrientation(currentView?.name)
@@ -74,11 +78,11 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
         groupedByDate: groupByDate?.(currentView?.name),
         groupCount,
       },
-    ));
+    ), false);
   });
 
   updateAllDayAppointments = memoize((
-    allDayAppointments, viewCellsData, allDayElementsMeta, currentView,
+    allDayAppointments, viewCellsData, timeTableElementsMeta, currentView,
     startViewDate, endViewDate, groups, getGroupOrientation, groupByDate,
   ) => {
     const groupOrientation = getGroupOrientation
@@ -86,11 +90,12 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
       : HORIZONTAL_GROUP_ORIENTATION;
     const groupCount = groups ? groups[groups.length - 1].length : 1;
 
-    if (!isAllDayElementsMetaActual(
-      viewCellsData, allDayElementsMeta, groupOrientation, groupCount,
-    )) {
-      return null;
-    }
+    // if (!isAllDayElementsMetaActual(
+    //   viewCellsData, allDayElementsMeta, groupOrientation, groupCount,
+    // )) {
+    //   return null;
+    // }
+    if (!timeTableElementsMeta.getCellRects) return false;
 
     return renderAppointments(calculateRectByDateAndGroupIntervals(
       { growDirection: HORIZONTAL_TYPE,  multiline: false },
@@ -98,14 +103,14 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
       getHorizontalRectByAppointmentData,
       {
         startViewDate, endViewDate,
-        viewCellsData, cellElementsMeta: allDayElementsMeta,
+        viewCellsData, cellElementsMeta: timeTableElementsMeta,
       },
       {
         groupOrientation,
         groupedByDate: groupByDate?.(currentView?.name),
         groupCount,
       },
-    ));
+    ), true);
   });
 
   render() {
@@ -138,7 +143,7 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
         <Template
           name="allDayAppointmentLayer"
         >
-          <TemplateConnector>
+          {/* <TemplateConnector>
             {({
               allDayAppointments, viewCellsData, allDayElementsMeta,
               startViewDate, endViewDate, groupOrientation, currentView, groups, groupByDate,
@@ -146,7 +151,26 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
               allDayAppointments, viewCellsData, allDayElementsMeta, currentView,
               startViewDate, endViewDate, groups, groupOrientation, groupByDate,
             )}
-          </TemplateConnector>
+          </TemplateConnector> */}
+          {(params: any) => (
+            <TemplateConnector>
+              {({
+                allDayAppointments, viewCellsData, timeTableElementsMeta,
+                startViewDate, endViewDate, groupOrientation, currentView, groups, groupByDate,
+              }) => {
+                console.log(allDayAppointments)
+                const { groupId } = params;
+                console.log(params)
+                const appointments = [allDayAppointments[groupId]];
+                console.log(appointments)
+                console.log(groupId)
+                return this.updateAllDayAppointments(
+                  appointments, viewCellsData, timeTableElementsMeta, currentView,
+                  startViewDate, endViewDate, groups, groupOrientation, groupByDate,
+                );
+              }}
+            </TemplateConnector>
+          )}
         </Template>
         <Template
           name="appointment"

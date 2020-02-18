@@ -17,7 +17,7 @@ const styles = {
 };
 
 const renderAllDayCell = (
-  Cell, key, startDate, endDate, endOfGroup, hasRightBorder, groupingInfo,
+  Cell, key, startDate, endDate, endOfGroup, hasRightBorder, groupingInfo, groupId,
 ) => (
   <Cell
     key={key}
@@ -26,6 +26,7 @@ const renderAllDayCell = (
     endOfGroup={endOfGroup}
     hasRightBorder={endOfGroup}
     groupingInfo={groupingInfo}
+    groupId={groupId}
   />
 );
 
@@ -47,8 +48,8 @@ class LayoutBase extends React.PureComponent {
   setCells() {
     const { setCellElementsMeta } = this.props;
 
-    const tableElement = this.table.current;
-    setCellElementsMeta(cellsMeta(tableElement));
+    // const tableElement = this.table.current;
+    // setCellElementsMeta(cellsMeta(tableElement));
   }
 
   render() {
@@ -61,43 +62,21 @@ class LayoutBase extends React.PureComponent {
       formatDate,
       groups,
       groupOrientation,
+      groupId,
+      appointmentLayerComponent,
       ...restProps
     } = this.props;
 
     return (
-      <Table
-        ref={this.table}
-        className={classNames(classes.table, className)}
-        {...restProps}
-      >
-        <TableBody>
-          {groupOrientation !== VERTICAL_GROUP_ORIENTATION && (
-            <Row>
-              {cellsData.map(({
-                startDate, endDate, endOfGroup, groupingInfo,
-              }) => renderAllDayCell(
-                cellComponent, getViewCellKey(startDate, groupingInfo),
-                startDate, endDate, endOfGroup, endOfGroup, groupingInfo,
-              ))}
-            </Row>
-          )}
-          {groupOrientation === VERTICAL_GROUP_ORIENTATION && (
-            groups[groups.length - 1].map((group, index) => {
-              const groupingInfo = getGroupingInfoFromGroups(groups, index);
-              return (
-                <Row key={getRowKey(cellsData[0].startDate, groupingInfo)}>
-                  {cellsData.map(({
-                    startDate, endDate, endOfGroup,
-                  }) => renderAllDayCell(
-                    cellComponent, getViewCellKey(startDate, groupingInfo),
-                    startDate, endDate, endOfGroup, endOfGroup, groupingInfo,
-                  ))}
-                </Row>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+      <Row>
+        {cellsData.map(({
+          startDate, endDate, endOfGroup, groupingInfo,
+        }, index) => renderAllDayCell(
+          cellComponent, getViewCellKey(startDate, groupingInfo),
+          startDate, endDate, endOfGroup, endOfGroup, groupingInfo,
+          groupId,
+        ))}
+      </Row>
     );
   }
 }
@@ -112,11 +91,13 @@ LayoutBase.propTypes = {
   groupOrientation: PropTypes.oneOf([HORIZONTAL_GROUP_ORIENTATION, VERTICAL_GROUP_ORIENTATION]),
   setCellElementsMeta: PropTypes.func.isRequired,
   className: PropTypes.string,
+  groupId: PropTypes.number,
 };
 LayoutBase.defaultProps = {
   groups: undefined,
   className: undefined,
   groupOrientation: HORIZONTAL_GROUP_ORIENTATION,
+  groupId: 1,
 };
 
 export const Layout = withStyles(styles, { name: 'Layout' })(LayoutBase);

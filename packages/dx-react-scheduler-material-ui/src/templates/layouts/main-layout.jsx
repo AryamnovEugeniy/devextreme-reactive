@@ -19,11 +19,11 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     top: 0,
-    zIndex: 2,
+    zIndex: 4,
   },
   leftPanel: {
     left: 0,
-    zIndex: 1,
+    zIndex: 3,
     boxSizing: 'border-box',
     float: 'left',
     width: ({ groupingPanelSize }) => `${theme.spacing(
