@@ -19,10 +19,10 @@ export class Layout extends React.PureComponent {
   }
 
   setCells() {
-    const { setCellElementsMeta } = this.props;
+    const { setCellElementsMeta, groupId } = this.props;
 
     const tableElement = this.table.current;
-    setCellElementsMeta(cellsMeta(tableElement));
+    setCellElementsMeta(cellsMeta(tableElement), groupId);
   }
 
   render() {
@@ -30,6 +30,7 @@ export class Layout extends React.PureComponent {
       setCellElementsMeta,
       cellsNumber,
       children,
+      groupId,
       ...restProps
     } = this.props;
 

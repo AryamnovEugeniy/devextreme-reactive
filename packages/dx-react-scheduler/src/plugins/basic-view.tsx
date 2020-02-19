@@ -24,7 +24,8 @@ const TimeTableAppointmentLayer = () => <TemplatePlaceholder name="timeTableAppo
 const startViewDateBaseComputed = ({ viewCellsData }) => startViewDateCore(viewCellsData);
 const endViewDateBaseComputed = ({ viewCellsData }) => endViewDateCore(viewCellsData);
 
-const TimeTablePlaceholder = () => <TemplatePlaceholder name="timeTable" />;
+const TimeTablePlaceholder = params => <TemplatePlaceholder name="timeTable" params={params} />;
+const TimeTableContainerPlaceholder = () => <TemplatePlaceholder name="timeTableContainer" />;
 const DayScalePlaceholder = () => <TemplatePlaceholder name="dayScale" />;
 const DayScaleEmptyCellPlaceholder = () => <TemplatePlaceholder name="dayScaleEmptyCell" />;
 
@@ -32,7 +33,7 @@ const GroupingPanelPlaceholder = () => <TemplatePlaceholder name="groupingPanel"
 
 class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> {
   state = {
-    timeTableElementsMeta: {},
+    timeTableElementsMeta: [{}, {}],
     scrollingStrategy: {
       topBoundary: 0,
       bottomBoundary: 0,
@@ -46,8 +47,37 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
   scrollingStrategyComputed = memoize((viewName, scrollingStrategy) => getters =>
     computed(getters, viewName!, () => scrollingStrategy, getters.scrollingStrategy));
 
-  timeTableElementsMetaComputed = memoize((viewName, timeTableElementsMeta) => getters =>
-    computed(getters, viewName!, () => timeTableElementsMeta, getters.timeTableElementsMeta));
+  // timeTableElementsMetaComputed = memoize((viewName, timeTableElementsMeta) => getters =>
+  //   computed(getters, viewName!, () => timeTableElementsMeta, getters.timeTableElementsMeta));
+  timeTableElementsMetaComputed = memoize((viewName, timeTableElementsMeta) => (getters) => {
+    if (getters.currentView.name !== viewName && !!getters.timeTableElementsMeta) {
+      return getters.timeTableElementsMeta;
+    }
+    if (!timeTableElementsMeta[0].parentRect) {
+      return {};
+    }
+
+    const validTimeTableElementsMeta = {
+      parentRect: () => ({
+        x: timeTableElementsMeta[0].parentRect().x,
+        y: timeTableElementsMeta[0].parentRect().y,
+        width: timeTableElementsMeta[0].parentRect().width,
+        height: timeTableElementsMeta[0].parentRect().height * timeTableElementsMeta.length,
+        top: timeTableElementsMeta[0].parentRect().top,
+        right: timeTableElementsMeta[0].parentRect().right,
+        bottom: timeTableElementsMeta[timeTableElementsMeta.length - 1].parentRect().bottom,
+        left: timeTableElementsMeta[0].parentRect().left,
+      }),
+      getCellRects: timeTableElementsMeta.reduce((acc, group) => {
+        return [
+          ...acc,
+          ...group.getCellRects,
+        ];
+      }, []),
+    };
+
+    return validTimeTableElementsMeta;
+  });
 
   intervalCountComputed = memoize((viewName, intervalCount) => getters =>
     computed(getters, viewName!, () => intervalCount, getters.intervalCount));
@@ -100,8 +130,12 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
       getters.timeTableAppointments,
     ));
 
-  updateCellElementsMeta = memoize((cellElementsMeta) => {
-    this.setState({ timeTableElementsMeta: cellElementsMeta });
+  updateCellElementsMeta = memoize((cellElementsMeta, groupIndex) => {
+    this.setState(({ timeTableElementsMeta }) => {
+      const nextElementsMeta = timeTableElementsMeta.slice();
+      nextElementsMeta[groupIndex] = cellElementsMeta;
+      return { timeTableElementsMeta: nextElementsMeta }
+    });
   });
 
   setScrollingStrategy = (scrollingStrategy: ScrollingStrategy) => {
@@ -133,6 +167,9 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
     } = this.props;
     const { timeTableElementsMeta, scrollingStrategy } = this.state;
     const viewDisplayName = displayName || viewName;
+    // console.log(timeTableElementsMeta[0].parentRect && timeTableElementsMeta[0].parentRect())
+    // console.log(timeTableElementsMeta[1].parentRect && timeTableElementsMeta[1].parentRect())
+    // console.log('////////////////////////////////////')
 
     return (
       <Plugin name="basicView">
@@ -188,7 +225,7 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
                 return (
                   <Layout
                     dayScaleComponent={DayScalePlaceholder}
-                    timeTableComponent={TimeTablePlaceholder}
+                    timeTableComponent={TimeTableContainerPlaceholder}
                     setScrollingStrategy={this.setScrollingStrategy}
                     groupingPanelComponent={
                       isVerticalGrouping ? GroupingPanelPlaceholder : undefined
@@ -211,6 +248,7 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
               const groupByDateEnabled = groupByDate?.(viewName);
               const isHorizontalGrouping = groupOrientation?.(viewName)
                 === HORIZONTAL_GROUP_ORIENTATION;
+              const cellsData = viewCellsData.reduce((acc, group) => [...acc, ...group], []);
               return (
                 <DayScale
                   cellComponent={dayScaleCellComponent}
@@ -218,7 +256,7 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
                   groupingPanelComponent={
                     isHorizontalGrouping ? GroupingPanelPlaceholder : undefined
                   }
-                  cellsData={viewCellsData}
+                  cellsData={cellsData}
                   formatDate={formatDate}
                   groupedByDate={groupByDateEnabled}
                 />
@@ -240,26 +278,58 @@ class BasicViewBase extends React.PureComponent<BasicViewProps, BasicViewState> 
           )}
         </Template>
 
-        <Template name="timeTable">
+        <Template name="timeTableContainer">
           <TemplateConnector>
             {({ formatDate, currentView, viewCellsData }) => {
               if (currentView.name !== viewName) return <TemplatePlaceholder />;
+              // return (
+              //   <>
+              //     <TimeTableLayout
+              //       cellsData={viewCellsData}
+              //       rowComponent={timeTableRowComponent}
+              //       cellComponent={CellPlaceholder}
+              //       formatDate={formatDate}
+              //       setCellElementsMeta={this.updateCellElementsMeta}
+              //     />
+              //     <AppointmentLayer>
+              //       <TimeTableAppointmentLayer />
+              //     </AppointmentLayer>
+              //   </>
+              // );
               return (
                 <>
-                  <TimeTableLayout
-                    cellsData={viewCellsData}
-                    rowComponent={timeTableRowComponent}
-                    cellComponent={CellPlaceholder}
-                    formatDate={formatDate}
-                    setCellElementsMeta={this.updateCellElementsMeta}
-                  />
+                  {viewCellsData.map((timeTable, index) => {
+                    return (
+                      <TimeTablePlaceholder
+                        key={index.toString()}
+                        groupId={index}
+                        cellsData={timeTable}
+                        formatDate={formatDate}
+                      />
+                    );
+                  })}
                   <AppointmentLayer>
                     <TimeTableAppointmentLayer />
                   </AppointmentLayer>
                 </>
-              );
+              )
             }}
           </TemplateConnector>
+        </Template>
+
+        <Template name="timeTable">
+          {(params: any) => {
+            return (
+              <TimeTableLayout
+                cellsData={params.cellsData}
+                rowComponent={timeTableRowComponent}
+                cellComponent={CellPlaceholder}
+                formatDate={params.formatDate}
+                setCellElementsMeta={this.updateCellElementsMeta}
+                groupId={params.groupId}
+              />
+            );
+          }}
         </Template>
 
         <Template name="dayScaleEmptyCell">

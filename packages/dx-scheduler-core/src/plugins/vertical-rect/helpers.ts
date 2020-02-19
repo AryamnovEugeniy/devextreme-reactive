@@ -83,6 +83,7 @@ export const getVerticalRectByAppointmentData: GetVerticalRectByAppointmentDataF
 
   const top = firstCellRect.top + firstCellRect.topOffset;
   const height = (lastCellRect.top + lastCellRect.topOffset) - top;
+  console.log(firstCellRect.parentRect.top)
 
   return {
     width: firstCellRect.width - CELL_GAP_PX - CELL_BOUND_HORIZONTAL_OFFSET_PX,

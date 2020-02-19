@@ -47,12 +47,12 @@ export const expandViewCellsDataWithGroups: PureComputed<
 > = (viewCellsData, groups, sortedResources, groupByDate, groupOrientation) => {
   if (groups.length === 0) return viewCellsData;
   if (groupByDate) {
-    return expandCellsWithGroupedByDateData(viewCellsData, groups, sortedResources);
+    return [expandCellsWithGroupedByDateData(viewCellsData[0], groups, sortedResources)];
   }
   if (groupOrientation === HORIZONTAL_GROUP_ORIENTATION) {
-    return expandHorizontallyGroupedCells(viewCellsData, groups, sortedResources);
+    return [expandHorizontallyGroupedCells(viewCellsData[0], groups, sortedResources)];
   }
-  return expandVerticallyGroupedCells(viewCellsData, groups, sortedResources);
+  return expandVerticallyGroupedCells(viewCellsData[0], groups, sortedResources);
 };
 
 const expandCellsWithGroupedByDateData: ExpandGroupingPanelCellFn = (
@@ -101,16 +101,16 @@ const expandVerticallyGroupedCells: ExpandGroupingPanelCellFn = (
   acc: ViewCell[][], group: Group, index: number,
 ) => {
   if (index === 0) {
-    return viewCellsData.map((
+    return [viewCellsData.map((
       viewCellsRow: ViewCell[], viewRowIndex: number,
     ) => addGroupInfoToCells(
         group, groups, sortedResources, viewCellsRow,
         index, viewRowIndex === viewCellsData.length - 1, VERTICAL_GROUP_ORIENTATION,
-      ) as ViewCell[]);
+      ) as ViewCell[])];
   }
   return [
     ...acc,
-    ...viewCellsData.map((viewCellsRow: ViewCell[], viewRowIndex: number) =>
+    viewCellsData.map((viewCellsRow: ViewCell[], viewRowIndex: number) =>
       addGroupInfoToCells(
         group, groups, sortedResources, viewCellsRow,
         index, viewRowIndex === viewCellsData.length - 1, VERTICAL_GROUP_ORIENTATION,

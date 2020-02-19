@@ -87,7 +87,7 @@ export const viewCellsData: ViewCellsDataFn = (
   );
   const currentTime = moment(currTime as SchedulerDateTime);
 
-  return times.reduce((cellsAcc, time) => {
+  return [times.reduce((cellsAcc, time) => {
     const start = moment(time.start);
     const end = moment(time.end);
     const rowCells = days.reduce((rowAcc, day) => {
@@ -99,7 +99,7 @@ export const viewCellsData: ViewCellsDataFn = (
     }, [] as ViewCell[]);
     cellsAcc.push(rowCells);
     return cellsAcc;
-  }, [] as ViewCell[][]);
+  }, [] as ViewCell[][])];
 };
 
 export const allDayCells: PureComputed<
@@ -113,12 +113,12 @@ export const allDayCells: PureComputed<
 
 export const startViewDate: PureComputed<
   [ViewCell[][]], Date
-> = viewCells => moment(viewCells[0][0].startDate).toDate();
+> = viewCells => moment(viewCells[0][0][0].startDate).toDate();
 
 export const endViewDate: PureComputed<
   [ViewCell[][]], Date
 > = (viewCells) => {
-  const lastRowIndex = viewCells.length - 1;
-  const lastCellIndex = viewCells[lastRowIndex].length - 1;
-  return subtractSecond(viewCells[lastRowIndex][lastCellIndex].endDate!);
+  const lastRowIndex = viewCells[0].length - 1;
+  const lastCellIndex = viewCells[0][lastRowIndex].length - 1;
+  return subtractSecond(viewCells[0][lastRowIndex][lastCellIndex].endDate!);
 };

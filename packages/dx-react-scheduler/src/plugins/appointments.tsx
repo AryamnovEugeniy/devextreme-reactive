@@ -47,11 +47,20 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
   };
 
   updateTimeTableAppointments = memoize((
-    timeTableAppointments, viewCellsData, timeTableElementsMeta, currentView,
+    timeTableAppointments, groupedCellsData, timeTableElementsMeta, currentView,
     startViewDate, endViewDate, cellDuration, groups, getGroupOrientation, groupByDate,
   ) => {
-    if (!isTimeTableElementsMetaActual(viewCellsData, timeTableElementsMeta)) return null;
-
+    // console.log(timeTableElementsMeta)
+    // if (!isTimeTableElementsMetaActual(viewCellsData, timeTableElementsMeta)) return null;
+    if (!timeTableElementsMeta.getCellRects) return null;
+    console.log(timeTableElementsMeta.getCellRects[0]())
+    const viewCellsData = groupedCellsData.reduce((acc, group) => {
+      return [
+        ...acc,
+        ...group,
+      ];
+    }, []);
+    // console.log(viewCellsData)
     const groupOrientation = getGroupOrientation
       ? getGroupOrientation(currentView?.name)
       : HORIZONTAL_GROUP_ORIENTATION;
@@ -86,6 +95,7 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
       : HORIZONTAL_GROUP_ORIENTATION;
     const groupCount = groups ? groups[groups.length - 1].length : 1;
 
+    return null;
     if (!isAllDayElementsMetaActual(
       viewCellsData, allDayElementsMeta, groupOrientation, groupCount,
     )) {

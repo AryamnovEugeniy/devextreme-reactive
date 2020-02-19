@@ -9,11 +9,13 @@ export const Layout = React.memo(({
   rowComponent: Row,
   cellsData,
   formatDate,
+  groupId,
   ...restProps
 }) => (
   <LayoutBase
     setCellElementsMeta={setCellElementsMeta}
     cellsNumber={cellsData[0].length}
+    groupId={groupId}
     {...restProps}
   >
     {cellsData.map((days, index) => (

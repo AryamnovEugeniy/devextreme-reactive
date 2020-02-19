@@ -113,11 +113,11 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
           <TemplateConnector>
             {({ currentView, groupOrientation }) => {
               if (currentView.type === VIEW_TYPES.MONTH) return <TemplatePlaceholder />;
-              if (groupOrientation?.(currentView.name) === VERTICAL_GROUP_ORIENTATION) {
-                return (
-                  <GroupingPanelPlaceholder />
-                );
-              }
+              // if (groupOrientation?.(currentView.name) === VERTICAL_GROUP_ORIENTATION) {
+              //   return (
+              //     <GroupingPanelPlaceholder />
+              //   );
+              // }
               return (
                 <TitleCell getMessage={getMessage} />
               );
@@ -125,52 +125,64 @@ class AllDayPanelBase extends React.PureComponent<AllDayPanelProps, AllDayPanelS
           </TemplateConnector>
         </Template>
 
-        <Template name="dayScale">
-          <TemplatePlaceholder />
-          <TemplateConnector>
-            {({ currentView }) => {
-              if (currentView.type === VIEW_TYPES.MONTH) return null;
-              return (
-                <Container>
-                  <AllDayPanelPlaceholder />
-                </Container>
-              );
-            }}
-          </TemplateConnector>
+        <Template name="timeTable">
+          {(params: any) => {
+            return (
+              <Container style={{ position: 'relative', zIndex: 0 }}>
+                <TemplateConnector>
+                  {({ currentView }) => {
+                    if (currentView.type === VIEW_TYPES.MONTH) return null;
+                    return (
+                      <Container style={{ position: 'sticky', top: '56px', zIndex: 2 }}>
+                        <AllDayPanelPlaceholder
+                          viewCellsData={params.cellsData}
+                          groupId={params.groupId}
+                        />
+                      </Container>
+                    );
+                  }}
+                </TemplateConnector>
+                <TemplatePlaceholder params={{ ...params }}/>
+              </Container>
+            );
+          }}
         </Template>
 
         <Template name="allDayPanel">
-          <TemplatePlaceholder />
-          <TemplateConnector>
-            {({
-              currentView, formatDate, viewCellsData,
-              groups, groupOrientation: getGroupOrientation,
-            }) => {
-              if (currentView.type === VIEW_TYPES.MONTH) return null;
-              const groupOrientation = getGroupOrientation?.(currentView?.name)
-                || HORIZONTAL_GROUP_ORIENTATION;
+          {(params: any) => {
+            return (
+              <TemplateConnector>
+                {({
+                  currentView, formatDate, groups,
+                }) => {
+                  if (currentView.type === VIEW_TYPES.MONTH) return null;
+                  const groupOrientation = HORIZONTAL_GROUP_ORIENTATION;
+                  const { viewCellsData, groupId } = params;
 
-              return (
-                <>
-                  <Layout
-                    cellComponent={CellPlaceholder}
-                    rowComponent={rowComponent}
-                    cellsData={this.allDayCellsData(viewCellsData)}
-                    setCellElementsMeta={this.updateCellElementsMeta}
-                    formatDate={formatDate}
-                    groups={
-                      groupOrientation === VERTICAL_GROUP_ORIENTATION
-                        ? groups : undefined
-                    }
-                    groupOrientation={groupOrientation}
-                  />
-                  <AppointmentLayer>
-                    <AllDayAppointmentLayerPlaceholder />
-                  </AppointmentLayer>
-                </>
-              );
-            }}
-          </TemplateConnector>
+                  return (
+                    <>
+                      <Layout
+                        cellComponent={CellPlaceholder}
+                        rowComponent={rowComponent}
+                        cellsData={this.allDayCellsData(viewCellsData)}
+                        setCellElementsMeta={() => console.log('hi')}
+                        formatDate={formatDate}
+                        groups={
+                          groupOrientation === VERTICAL_GROUP_ORIENTATION
+                            ? groups : undefined
+                        }
+                        groupOrientation={groupOrientation}
+                        groupId={groupId}
+                      />
+                      <AppointmentLayer>
+                        <AllDayAppointmentLayerPlaceholder />
+                      </AppointmentLayer>
+                    </>
+                  );
+                }}
+              </TemplateConnector>
+            );
+          }}
         </Template>
 
         <Template name="allDayPanelCell">

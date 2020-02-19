@@ -118,12 +118,13 @@ class WeekViewBase extends React.PureComponent<WeekViewProps> {
             }) => {
               if (currentView.name !== viewName) return <TemplatePlaceholder />;
               const groupOrientation = getGroupOrientation?.(viewName);
+              const cellsData = viewCellsData.reduce((acc, group) => [...acc, ...group], []);
               return (
                 <TimeScale
                   labelComponent={TimeScaleLabel}
                   tickCellComponent={timeScaleTickCellComponent}
                   rowComponent={timeScaleTicksRowComponent}
-                  cellsData={viewCellsData}
+                  cellsData={cellsData}
                   formatDate={formatDate}
                   groups={groups}
                   groupOrientation={groupOrientation}
