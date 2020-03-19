@@ -83,12 +83,14 @@ export const getVerticalRectByAppointmentData: GetVerticalRectByAppointmentDataF
 
   const top = firstCellRect.top + firstCellRect.topOffset;
   const height = (lastCellRect.top + lastCellRect.topOffset) - top;
+  const reducedHeight = appointment.reducedHeight || 0;
+  const reducedWidth = appointment.reducedWidth || 0;
 
   return {
-    width: firstCellRect.width - CELL_GAP_PX - CELL_BOUND_HORIZONTAL_OFFSET_PX,
+    width: firstCellRect.width - CELL_GAP_PX - CELL_BOUND_HORIZONTAL_OFFSET_PX - reducedWidth,
     top: top - firstCellRect.parentRect.top + CELL_BOUND_HORIZONTAL_OFFSET_PX,
     left: firstCellRect.left - firstCellRect.parentRect.left + CELL_BOUND_HORIZONTAL_OFFSET_PX,
     parentWidth: firstCellRect.parentRect.width,
-    height: height - CELL_BOUND_VERTICAL_OFFSET_PX,
+    height: height - CELL_BOUND_VERTICAL_OFFSET_PX - reducedHeight,
   };
 };

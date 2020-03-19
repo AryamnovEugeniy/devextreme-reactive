@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 
-export const AppointmentContainer = ({ style, children, ...restProps }) => (
+export const StyledContainer = ({ style, children, ...restProps }) => (
   <div
     style={style}
     {...restProps}
@@ -10,7 +10,7 @@ export const AppointmentContainer = ({ style, children, ...restProps }) => (
   </div>
 );
 
-AppointmentContainer.propTypes = {
+StyledContainer.propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object.isRequired,
 };

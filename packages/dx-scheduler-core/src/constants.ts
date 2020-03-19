@@ -61,3 +61,6 @@ export const VIEW_TYPES = {
   DAY: 'day',
   ALL_DAY_PANEL: 'allDayPanel',
 };
+
+export const COMPACT_APPOINTMENTS_CONTAINER_WIDTH = 30;
+export const COMPACT_APPOINTMENT_CONTAINER_HEIGHT = 20;

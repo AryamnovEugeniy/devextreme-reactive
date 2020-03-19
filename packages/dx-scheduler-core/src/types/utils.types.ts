@@ -20,6 +20,8 @@ interface GroupItem {
 export type AppointmentGroup = {
   items: GroupItem[];
   reduceValue: number;
+  reducedWidth?: number;
+  reducedHeight?: number;
 };
 
 /** @internal */

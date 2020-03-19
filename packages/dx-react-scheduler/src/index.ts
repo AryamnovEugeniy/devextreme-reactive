@@ -21,3 +21,4 @@ export * from './plugins/grouping-state';
 export * from './plugins/grouping-panel';
 export * from './plugins/current-time-indicator';
 export * from './plugins/integrated-grouping';
+export * from './plugins/compact-appointments';

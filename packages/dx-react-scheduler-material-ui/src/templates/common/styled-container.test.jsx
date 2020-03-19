@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { AppointmentContainer } from './appointment-container';
+import { StyledContainer } from './styled-container';
 
 describe('Appointments', () => {
   const defaultProps = {
     style: {},
   };
-  describe('AppointmentContainer', () => {
+  describe('StyledContainer', () => {
     it('should pass rest props to the root element', () => {
       const tree = shallow((
-        <AppointmentContainer {...defaultProps} className="custom-class">
+        <StyledContainer {...defaultProps} className="custom-class">
           <div />
-        </AppointmentContainer>
+        </StyledContainer>
       ));
 
       expect(tree.find('.custom-class'))
@@ -19,9 +19,9 @@ describe('Appointments', () => {
     });
     it('should render children inside', () => {
       const tree = shallow((
-        <AppointmentContainer {...defaultProps} data={{ a: 1 }}>
+        <StyledContainer {...defaultProps} data={{ a: 1 }}>
           <div className="child" />
-        </AppointmentContainer>
+        </StyledContainer>
       ));
 
       expect(tree.find('.child').exists())

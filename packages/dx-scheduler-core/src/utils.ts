@@ -199,11 +199,13 @@ export const calculateFirstDateOfWeek: CalculateFirstDateOfWeekFn = (
 
 export const unwrapGroups: PureComputed<
   [AppointmentGroup[]], AppointmentUnwrappedGroup[]
-> = groups => groups.reduce((acc, { items, reduceValue }) => {
+> = groups => groups.reduce((acc, { items, reduceValue, reducedHeight, reducedWidth }) => {
   acc.push(...items.map(({ start, end, dataItem, offset, resources, ...restProps }) => ({
     start, end, dataItem, offset, reduceValue, resources,
     fromPrev: moment(start).diff(dataItem.startDate, 'minutes') > 1,
     toNext: moment(dataItem.endDate).diff(end, 'minutes') > 1,
+    reducedHeight,
+    reducedWidth,
     ...restProps,
   })));
   return acc;

@@ -4,6 +4,7 @@ import {
   Scheduler,
   WeekView,
   Appointments,
+  CompactAppointments,
 } from '@devexpress/dx-react-scheduler-material-ui';
 
 import appointments from '../../../demo-data/today-appointments';
@@ -30,6 +31,7 @@ export default class Demo extends React.PureComponent {
             endDayHour={19}
           />
           <Appointments />
+          <CompactAppointments />
         </Scheduler>
       </Paper>
     );

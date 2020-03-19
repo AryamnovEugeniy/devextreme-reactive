@@ -19,3 +19,4 @@ export * from './appointments';
 export * from './today-button';
 export * from './grouping';
 export * from './current-time-indicator';
+export * from './compact-appointments';
