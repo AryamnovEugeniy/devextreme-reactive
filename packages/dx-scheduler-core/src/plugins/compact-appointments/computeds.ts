@@ -1,7 +1,11 @@
 import { PureComputed } from '@devexpress/dx-core';
 import { sortAppointments, findOverlappedAppointments, adjustAppointments, unwrapGroups } from '../../utils';
-import { COMPACT_APPOINTMENTS_CONTAINER_WIDTH, COMPACT_APPOINTMENT_CONTAINER_HEIGHT } from '../../constants';
-import { AppointmentMoment, AppointmentGroup, AppointmentUnwrappedGroup } from '../../types';
+import { VERTICAL_COMPACT_APPOINTMENTS_CONTAINER_SIZE, COMPACT_APPOINTMENT_CONTAINER_HEIGHT } from '../../constants';
+import {
+  AppointmentMoment, AppointmentGroup, AppointmentUnwrappedGroup,
+  ViewCellData, ViewMetaData, CellByDate, CompactAppointmentsPayload,
+} from '../../types';
+import { getVerticalCellIndexByAppointmentData } from '../vertical-rect/helpers';
 
 export const overlappingAppointments: PureComputed<
   [AppointmentMoment[][], boolean], AppointmentGroup[][]
@@ -38,7 +42,7 @@ export const removeHiddenAppointments: PureComputed<
       return ({
         reduceValue: isReduceValueIncorrect ? maxAppointmentsPerCell : reduceValue,
         reducedWidth: isReduceValueIncorrect && !isHorizontalView
-          ? COMPACT_APPOINTMENTS_CONTAINER_WIDTH
+          ? VERTICAL_COMPACT_APPOINTMENTS_CONTAINER_SIZE
           : undefined,
         reducedHeight: isReduceValueIncorrect && isHorizontalView
           ? COMPACT_APPOINTMENT_CONTAINER_HEIGHT
@@ -50,14 +54,36 @@ export const removeHiddenAppointments: PureComputed<
 };
 
 export const hiddenAppointments: PureComputed<
-  [AppointmentGroup[][], number, boolean], AppointmentUnwrappedGroup[][]
-> = (appointmentGroups, maxAppointmentsPerCell, isHorizontalView) => {
+  [AppointmentGroup[][], number, boolean, ViewCellData[][],
+    ViewMetaData], AppointmentUnwrappedGroup[][]
+> = (
+  appointmentGroups, maxAppointmentsPerCell, isHorizontalView,
+  viewCellsData, viewMetaData,
+) => {
   const filteredAppointments = appointmentGroups
     .map(appointmentGroup => removeVisibleAppointments(
       appointmentGroup, maxAppointmentsPerCell, isHorizontalView,
     ));
   const unwrappedAppointments = filteredAppointments
-    .map(unwrapGroups) as AppointmentUnwrappedGroup[][];
+      .map(unwrapGroups) as AppointmentUnwrappedGroup[][];
+  if (!isHorizontalView) {
+    const cellsPayload = unwrappedAppointments
+      .map(groupedAppointments => groupedAppointments.map((appointment) => {
+        const { index: cellIndex, startDate } = getVerticalCellIndexByAppointmentData(
+          appointment,
+          viewCellsData,
+          viewMetaData,
+          appointment.start.toDate(),
+          appointment.takePrev,
+        );
+        return { index: cellIndex, startDate };
+      }));
+    const result = groupAppointmentsByCellIndex(
+      cellsPayload as CellByDate[][], unwrappedAppointments,
+    );
+    return result;
+
+  }
   return unwrappedAppointments;
 };
 
@@ -73,4 +99,33 @@ export const removeVisibleAppointments: PureComputed<
       });
     });
   return filteredAppointments;
+};
+
+export const groupAppointmentsByCellIndex: PureComputed<
+  [CellByDate[][], AppointmentUnwrappedGroup[][]], CompactAppointmentsPayload[]
+> = (cellsPayload, appointments) => {
+  let currentCellIndex = -1;
+  const compactAppointments = appointments
+    .reduce((acc, appointmentGroup, appointmentGroupIndex) => [
+      ...acc,
+      ...appointmentGroup.reduce((compactAppointmentsAcc, appointment, appointmentIndex) => {
+        const cellData = cellsPayload[appointmentGroupIndex][appointmentIndex];
+        const cellIndex = cellData.index;
+        if (currentCellIndex === cellIndex) {
+          compactAppointmentsAcc[compactAppointmentsAcc.length - 1].appointments.push(
+            appointment,
+          );
+          return compactAppointmentsAcc;
+        }
+        currentCellIndex = cellIndex;
+        return ([
+          ...compactAppointmentsAcc,
+          {
+            appointments: [appointment],
+            cellData,
+          },
+        ]);
+      }, [] as CompactAppointmentsPayload[]),
+    ], [] as CompactAppointmentsPayload[]);
+  return compactAppointments;
 };

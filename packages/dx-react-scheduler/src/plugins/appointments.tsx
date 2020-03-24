@@ -125,6 +125,7 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
         <Template
           name="timeTableAppointmentLayer"
         >
+          <TemplatePlaceholder />
           <TemplateConnector>
             {({
               timeTableAppointments, viewCellsData, timeTableElementsMeta, currentView,
@@ -138,6 +139,7 @@ class AppointmentsBase extends React.PureComponent<AppointmentsProps> {
         <Template
           name="allDayAppointmentLayer"
         >
+          <TemplatePlaceholder />
           <TemplateConnector>
             {({
               allDayAppointments, viewCellsData, allDayElementsMeta,

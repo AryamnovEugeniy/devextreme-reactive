@@ -69,6 +69,8 @@ export * from './plugins/date-navigator/helpers';
 /** @internal */
 export * from './plugins/compact-appointments/computeds';
 /** @internal */
+export * from './plugins/compact-appointments/helpers';
+/** @internal */
 export * from './constants';
 /** @internal */
 export * from './utils';

@@ -18,9 +18,9 @@ export namespace CompactAppointments {
     /** Uses a localization message's key to retrieve the message. */
     getMessage: (messageKey: string) => string;
     /** A function to execute when the component is clicked. */
-    onClick: () => void;
+    onClick: (target: React.RefObject<unknown>, appointments: Array<AppointmentModel>) => void;
   }
-  /** Properties passes to a component that renders the appointment list's ovverlay. */
+  /** Properties passes to a component that renders the appointment list's overlay. */
   export interface AppointmentListOverlayProps {
     /** Specifies whether the overlay is visible. */
     visible: boolean;
@@ -91,8 +91,8 @@ export interface CompactAppointmentsProps {
 }
 
 type MaxAppointmentsPerCell = {
-  timetable: number;
-  allDayPanel: number;
+  timetable: number | undefined;
+  allDayPanel: number | undefined;
 };
 type MinAppointmentSize = {
   timetable: number;

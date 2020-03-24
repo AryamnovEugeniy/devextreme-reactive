@@ -1,13 +1,11 @@
 import { PureComputed } from '@devexpress/dx-core';
-import {
-  AppointmentId, SchedulerDateTime, CellElementsMeta,
-} from './scheduler-core.types';
+import { SchedulerDateTime, CellElementsMeta } from './scheduler-core.types';
 import { ViewCellData, AppointmentMoment } from './all-day-panel.types';
 import { ParentRect, Coordinates } from './horizontal-rect.types';
 import { ViewMetaData } from './utils.types';
 
 /** @internal */
-export type CellByDate = { index: AppointmentId; startDate: SchedulerDateTime };
+export type CellByDate = { index: number; startDate: SchedulerDateTime };
 
 /** @internal */
 export interface VerticalCellRect extends Coordinates {
